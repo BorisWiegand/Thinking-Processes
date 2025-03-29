@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "thinking-processes"
+version = "0.0.1"
+dependencies = [
+  "graphviz",
+]
+description = "Diagramming tools for the Thinking Processes from the Theory of Constraints"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { file = "LICENSE.txt" }
+keywords = ["TOC", "current reality tree", "evaporation cloud", "conflict resolution diagram"]
+authors = [{ name = "Boris Wiegand", email = "boris.wiegand@stahl-holding-saar.de" }]
+
+classifiers = [
+  "Intended Audience :: Education",
+  "Intended Audience :: Manufacturing",
+  "Intended Audience :: Science/Research",
+  "Intended Audience :: Other Audience",
+  "Topic :: Documentation",
+  "Topic :: Office/Business",
+
+  "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+
+  # Specify the Python versions you support here. In particular, ensure
+  # that you indicate you support Python 3. These classifiers are *not*
+  # checked by "pip install". See instead "requires-python" key in this file.
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+]

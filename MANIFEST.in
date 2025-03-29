@@ -1,0 +1,12 @@
+include README.md
+include LICENSE
+global-include *.py
+global-include *.pyi
+global-include *.pyx
+global-include *.pxd
+global-include *.cpp
+global-include *.h
+global-exclude *.pyc
+global-exclude *.pyd
+prune tests
+prune venv*

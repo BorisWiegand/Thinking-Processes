@@ -15,3 +15,4 @@
     along with thinking-processes. If not, see <https://www.gnu.org/licenses/>.
 '''
 from thinking_processes.current_reality_tree.current_reality_tree import CurrentRealityTree
+from thinking_processes.evaporating_cloud import EvaporatingCloud

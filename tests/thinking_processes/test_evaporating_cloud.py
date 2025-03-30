@@ -38,9 +38,8 @@ class TestCurrentRealityTree(unittest.TestCase):
         ec.add_assumption_on_need_b("smaller batches reduce carrying cost")
 
         with TemporaryDirectory() as tempdir:
-            path_to_plot = os.path.join('.', 'ec.png')
-            # path_to_plot = os.path.join(tempdir, 'ec.png')
-            ec.plot(view=True, filepath=path_to_plot)
+            path_to_plot = os.path.join(tempdir, 'ec.png')
+            ec.plot(view=False, filepath=path_to_plot)
             self.assertTrue(os.path.exists(path_to_plot))
 
 if __name__ == '__main__':

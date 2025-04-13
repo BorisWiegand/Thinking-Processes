@@ -57,6 +57,34 @@ The resulting tree looks like this:
 
 ![Current Reality Tree](crt.png)
 
+### Evaporating Cloud (Conflict Resolution Diagram)
+
+In this example, we resolve a conflict by identifying wrong assumptions behind the conflict:
+
+```python
+from thinking_processes import EvaporatingCloud
+
+ec = EvaporatingCloud(
+    objective='Reduce cost per unit',
+    need_a='Reduce setup cost per unit',
+    need_b='Reduce carrying cost per unit',
+    conflict_part_a='Run larger batches',
+    conflict_part_b='Run smaller batches'
+)
+
+ec.add_assumption_on_the_conflict('small is the opposite of large', is_true=True)
+ec.add_assumption_on_the_conflict('there is only one meaning to the word "batch"', is_true=False)
+ec.add_assumption_on_need_a("setup cost is fixed and can't be reduced")
+ec.add_assumption_on_need_a("the machine being set up is a bottleneck with no spare capacity")
+ec.add_assumption_on_need_b("smaller batches reduce carrying cost")
+
+ec.plot(view=True, filepath='ec.png')
+```
+
+The resulting diagram looks like this:
+
+![Evaporating Cloud](ec.png)
+
 ## Development
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.

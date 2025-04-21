@@ -51,6 +51,18 @@ class CurrentRealityTree:
         return new_node
 
     def add_causal_relation(self, causes: list[Node], effect: Node):
+        """
+        adds a causal relation (an arrow) from a list of causes to an effect.
+        read cause1 AND cause2 AND ... causeN causes effect.
+
+        Args:
+            causes (list[Node]): 
+            a group of nodes. the connections of multiple nodes will be highlighted with an ellipsis
+            representing an AND-relationship
+            effect (Node): the effect of the relation
+        """
+        if not causes:
+            raise ValueError('causes must not be empty')
         self.__causal_relations.append(CausalRelation(causes, effect))
         
     def plot(self, view: bool = True, filepath: str|None = None):

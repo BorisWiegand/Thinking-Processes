@@ -14,6 +14,12 @@
     You should have received a copy of the GNU General Public License
     along with thinking-processes. If not, see <https://www.gnu.org/licenses/>.
 '''
-from thinking_processes.current_reality_tree.current_reality_tree import CurrentRealityTree
-from thinking_processes.evaporating_cloud import EvaporatingCloud
-from thinking_processes.future_reality_tree.future_reality_tree import FutureRealityTree
+from dataclasses import dataclass
+
+@dataclass(frozen=True, unsafe_hash=True)
+class Node:
+    """
+    node of a future reality tree 
+    """
+    id: int
+    text: str

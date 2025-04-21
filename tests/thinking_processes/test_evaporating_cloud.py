@@ -22,7 +22,7 @@ from thinking_processes import EvaporatingCloud
 
 class TestCurrentRealityTree(unittest.TestCase):
 
-    def test_create_and_plot_tree(self):
+    def test_create_and_plot_evaporating_cloud(self):
         ec = EvaporatingCloud(
             objective='Reduce cost per unit',
             need_a='Reduce setup cost per unit',

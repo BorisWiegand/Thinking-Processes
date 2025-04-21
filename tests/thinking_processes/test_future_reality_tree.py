@@ -63,7 +63,7 @@ class TestCurrentRealityTree(unittest.TestCase):
 
         with TemporaryDirectory() as tempdir:
             path_to_plot = os.path.join(tempdir, 'frt.png')
-            frt.plot(view=True, filepath=path_to_plot)
+            frt.plot(view=False, filepath=path_to_plot)
             self.assertTrue(os.path.exists(path_to_plot))
 
 if __name__ == '__main__':

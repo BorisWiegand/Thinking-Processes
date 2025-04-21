@@ -55,7 +55,7 @@ crt.plot(view=True, filepath='crt.png')
 
 The resulting tree looks like this:
 
-![Current Reality Tree](crt.png)
+![Current Reality Tree](https://raw.githubusercontent.com/BorisWiegand/Thinking-Processes/refs/heads/main/crt.png)
 
 ### Evaporating Cloud (Conflict Resolution Diagram)
 
@@ -83,7 +83,48 @@ ec.plot(view=True, filepath='ec.png')
 
 The resulting diagram looks like this:
 
-![Evaporating Cloud](ec.png)
+![Evaporating Cloud](https://raw.githubusercontent.com/BorisWiegand/Thinking-Processes/refs/heads/main/ec.png)
+
+### Future Reality Tree
+
+In this example, we introduce injections to achieve desired effects:
+
+```python
+from thinking_processes import FutureRealityTree
+frt = FutureRealityTree()
+        
+engine_starts = frt.add_desirable_effect("Car's engine will start")
+
+build_fence = frt.add_injection("Build a fence between road and pool")
+frt.add_negative_effect(build_fence, 'Car can roll into the fence')
+
+cannot_roll_into_pool = frt.add_intermediate_effect("Car parked at the road does not roll into the pool")
+no_water_in_fuel_line = frt.add_intermediate_effect("There is no water in the fuel line")
+fuel_to_the_engine = frt.add_intermediate_effect("Fuel is getting to the engine")
+
+frt.add_causal_relation([build_fence], cannot_roll_into_pool)
+frt.add_causal_relation([cannot_roll_into_pool], no_water_in_fuel_line)
+frt.add_causal_relation([no_water_in_fuel_line], fuel_to_the_engine)
+frt.add_causal_relation([fuel_to_the_engine], engine_starts)
+
+airintake = frt.add_intermediate_effect("Air intake is free of water")
+air_circulation = frt.add_intermediate_effect("Air is able to circulate")
+ac_working = frt.add_desirable_effect("Air conditioning is working")
+frt.add_causal_relation([cannot_roll_into_pool], airintake)
+frt.add_causal_relation([airintake], air_circulation)
+frt.add_causal_relation([air_circulation], ac_working)
+
+radio_sounds_good = frt.add_desirable_effect("Radio sounds good")
+speakers_not_underwater = frt.add_intermediate_effect("Speakers are not underwater")
+frt.add_causal_relation([cannot_roll_into_pool], speakers_not_underwater)
+frt.add_causal_relation([speakers_not_underwater], radio_sounds_good)
+
+frt.plot(view=True, filepath='frt.png')
+```
+
+The resulting diagram looks like this:
+
+![Future Reality Tree](https://raw.githubusercontent.com/BorisWiegand/Thinking-Processes/refs/heads/main/frt.png)
 
 ## Development
 

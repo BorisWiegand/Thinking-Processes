@@ -24,7 +24,7 @@ from thinking_processes.future_reality_tree.node import Node
 
 class FutureRealityTree:
     """
-    you can use future reality tree to analyze necessary injections that cause a set of desirable effects.
+    you can use a future reality tree to analyze necessary injections that cause a set of desirable effects.
     """
 
     def __init__(self):

@@ -120,7 +120,7 @@ All tests in the "tests" directory are based on the unittest package.
 ### Deployment
 
 ```bash
-make rm -R dist build thinking_processes.egg-info || python -m build && twine upload --skip-existing --verbose dist/*
+rm -R dist thinking_processes.egg-info || python -m build && twine upload --skip-existing --verbose dist/*
 ```
 
 You should also create a tag for the current version

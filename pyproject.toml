@@ -11,7 +11,7 @@ dependencies = [
 description = "Diagramming tools for the Thinking Processes from the Theory of Constraints"
 readme = "README.md"
 requires-python = ">=3.11"
-license = { file = "LICENSE.txt" }
+license = { file = "LICENSE" }
 keywords = ["TOC", "current reality tree", "evaporation cloud", "conflict resolution diagram"]
 authors = [{ name = "Boris Wiegand", email = "boris.wiegand@stahl-holding-saar.de" }]
 

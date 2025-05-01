@@ -58,5 +58,27 @@ class TestCurrentRealityTree(unittest.TestCase):
             crt.plot(view=False, filepath=path_to_plot)
             self.assertTrue(os.path.exists(path_to_plot))
 
+    def test_from_txt_file_empty(self):
+        crt = CurrentRealityTree.from_txt_file('tests/resources/crt/empty.txt')
+        self.assertEqual(crt.get_nr_of_nodes(), 0)
+        self.assertEqual(crt.get_nr_of_causal_relations(), 0)
+
+    def test_from_txt_file_two_nodes(self):
+        crt = CurrentRealityTree.from_txt_file('tests/resources/crt/two_nodes.txt')
+        self.assertEqual(crt.get_nr_of_nodes(), 2)
+        self.assertEqual(crt.get_nr_of_causal_relations(), 0)
+
+    def test_from_txt_file_node_id_collision(self):
+        self.assertRaises(
+            ValueError, 
+            lambda: CurrentRealityTree.from_txt_file('tests/resources/crt/node_id_collision.txt')
+        )
+
+    def test_from_txt_file_wikipedia_example(self):
+        crt = CurrentRealityTree.from_txt_file('tests/resources/crt/wikipedia_example.txt')
+        self.assertEqual(crt.get_nr_of_nodes(), 13)
+        self.assertEqual(crt.get_nr_of_causal_relations(), 10)
+
+
 if __name__ == '__main__':
     unittest.main()

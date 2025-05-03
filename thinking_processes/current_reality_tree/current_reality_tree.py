@@ -177,11 +177,12 @@ class CurrentRealityTree:
         crt = CurrentRealityTree()
         nodes_by_id: dict[int, Node] = {}
         for line in s.splitlines():
+            line = line.strip()
             if NODE_LINE_PATTERN.match(line):
                 CurrentRealityTree._parse_node_line(line, nodes_by_id, crt)
             elif RELATION_LINE_PATTERN.match(line):
                 CurrentRealityTree._parse_relation_line(line, nodes_by_id, crt)
-            elif line.strip() != '':
+            elif line != '':
                 raise ValueError(f'Unsupported line format: "{line}"')
         return crt
     

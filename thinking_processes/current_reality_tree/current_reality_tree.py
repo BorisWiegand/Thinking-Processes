@@ -17,11 +17,13 @@
 import os
 from tempfile import TemporaryDirectory
 import re
+from typing import override
 
-from graphviz import Digraph
+from graphviz import Digraph, Graph
 
 from thinking_processes.current_reality_tree.causal_relation import CausalRelation
 from thinking_processes.current_reality_tree.node import Node
+from thinking_processes.diagram import Diagram
 
 NODE_ID_PATTERN = re.compile('[1-9]\d*')
 NODE_LINE_PATTERN = re.compile(rf'{NODE_ID_PATTERN.pattern}:.+')
@@ -32,7 +34,7 @@ X_CAUSES_Y_LINE_PATTERN = re.compile(rf'(\s*[1-9]\d*,?)+\s*{RIGHT_ARROW_PATTERN.
 RELATION_LINE_PATTERN = re.compile(f'({X_CAUSES_Y_LINE_PATTERN.pattern}|{Y_CAUSED_BY_X_LINE_PATTERN.pattern})\s*')
 NODE_ID_LIST_SEPARATOR_PATTERN = re.compile(r'(\s*,\s*|\s+)')
 
-class CurrentRealityTree:
+class CurrentRealityTree(Diagram):
     """
     you can use current reality tree to analyze the root-causes of a set of undesired effects (problems).
 
@@ -75,14 +77,8 @@ class CurrentRealityTree:
             raise ValueError('causes must not be empty')
         self.__causal_relations.append(CausalRelation(causes, effect))
         
-    def plot(self, view: bool = True, filepath: str|None = None):
-        """
-        plots this current reality tree.
-
-        Args:
-            view (bool, optional): set to False if you do not want to immediately view the diagram. Defaults to True.
-            filepath (str | None, optional): path to the file in which you want to save the plot. Defaults to None.
-        """
+    @override
+    def to_graphviz(self) -> Graph:
         graph = Digraph(graph_attr=dict(rankdir="BT"))
         for node in self.__nodes:
             if not any(c.effect == node for c in self.__causal_relations):
@@ -107,10 +103,7 @@ class CurrentRealityTree:
                         subgraph.node(mid_of_edge_id, label='', margin='0', height='0', width='0')
                         graph.edge(str(cause.id), mid_of_edge_id, arrowhead='none')
                         graph.edge(mid_of_edge_id, str(causal_relation.effect.id))
-        #we do not want to see the generated .dot code 
-        # => write it to a temporary file
-        with TemporaryDirectory(delete=not view or filepath is not None) as tempdir:
-            graph.render(filename=os.path.join(tempdir, 'crt.gv'), view=view, outfile=filepath)
+        return graph
 
     def get_nr_of_nodes(self) -> int:
         return len(self.__nodes)

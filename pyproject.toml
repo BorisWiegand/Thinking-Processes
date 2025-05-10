@@ -7,6 +7,7 @@ name = "thinking-processes"
 version = "1.0.1"
 dependencies = [
   "graphviz",
+  "drawpyo"
 ]
 description = "Diagramming tools for the Thinking Processes from the Theory of Constraints"
 readme = "README.md"

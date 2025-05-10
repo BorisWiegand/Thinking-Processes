@@ -5,7 +5,9 @@ For more information, see https://en.wikipedia.org/wiki/Thinking_processes_(theo
 
 ### Prerequisites
 
-Python 3.11+
+- Python 3.11+
+
+- Ensure [Graphviz](https://www.graphviz.org/) is installed and available in your PATH.
 
 ### Installing
 

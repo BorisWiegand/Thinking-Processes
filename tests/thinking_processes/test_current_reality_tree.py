@@ -79,6 +79,12 @@ class TestCurrentRealityTree(unittest.TestCase):
         self.assertEqual(crt.get_nr_of_nodes(), 13)
         self.assertEqual(crt.get_nr_of_causal_relations(), 10)
 
+    def test_save_as_drawio(self):
+        crt = CurrentRealityTree.from_txt_file('tests/resources/crt/wikipedia_example.txt')
+        with TemporaryDirectory() as tempdir:
+            path_to_plot = os.path.join(tempdir, 'crt.xml')
+            crt.save_as_drawio(path_to_plot)
+            self.assertTrue(os.path.exists(path_to_plot))
 
 if __name__ == '__main__':
     unittest.main()

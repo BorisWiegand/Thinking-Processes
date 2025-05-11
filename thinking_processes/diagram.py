@@ -85,9 +85,8 @@ class Diagram(ABC):
                 source=nodes_by_id[edge['tail']], 
                 target=nodes_by_id[edge['head']], 
                 page=page,
-                line_end_target=edge.get('arrowhead', None)
+                line_end_target=edge.get('arrowhead', None),
             )
-            # raise NotImplementedError(edge)
         file.write()
 
     @abstractmethod

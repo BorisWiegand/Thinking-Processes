@@ -59,6 +59,38 @@ The resulting tree looks like this:
 
 ![Current Reality Tree](https://raw.githubusercontent.com/BorisWiegand/Thinking-Processes/refs/heads/main/crt.png)
 
+To save some effort in typing, you can create the same diagram using a string representation of the tree:
+
+```python
+from thinking_processes import CurrentRealityTree
+crt = CurrentRealityTree.from_string("""
+1: Car's engine will not start
+2: Engine needs fuel in order to run
+3: Fuel is not getting to the engine
+4: There is water in the fuel line
+5: Air conditioning is not working
+6: Air is not able to circulate
+7: The air intake is full of water
+8: Radio sounds distorted
+9: The speakers are obstructed
+10: The speakers are underwater
+11: The car is in the swimming pool
+12: The handbreak is faulty
+13: The handbreak stops the car\nfrom rolling into the swimming pool
+
+2,3 -> 1
+4 -> 3
+6 => 5
+7 -> 6
+9 -> 8
+10 -> 9
+10 <= 11 
+11 <- 12 13
+11 -> 7
+11 -> 4
+""")
+```
+
 ### Evaporating Cloud (Conflict Resolution Diagram)
 
 In this example, we resolve a conflict by identifying wrong assumptions behind the conflict:

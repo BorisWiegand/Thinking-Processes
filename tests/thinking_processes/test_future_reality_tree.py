@@ -20,7 +20,7 @@ import unittest
 
 from thinking_processes import FutureRealityTree
 
-class TestCurrentRealityTree(unittest.TestCase):
+class TestFutureRealityTree(unittest.TestCase):
 
     def test_create_illegal_conntection(self):
         frt = FutureRealityTree()

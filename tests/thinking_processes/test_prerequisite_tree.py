@@ -39,5 +39,28 @@ class TestPrerequisiteTree(unittest.TestCase):
             prt.plot(view=False, filepath=path_to_plot)
             self.assertTrue(os.path.exists(path_to_plot))
 
+    def test_create_from_txt_file_empty(self):
+        self.assertRaises(ValueError, lambda: PrerequisiteTree.from_txt_file('tests/resources/prt/empty.txt'))
+
+    def test_create_from_txt_file_objective_only(self):
+        prt = PrerequisiteTree.from_txt_file('tests/resources/prt/objective_only.txt')
+        self.assertEqual(prt.get_total_nr_of_obstacles(), 0)
+
+    def test_create_from_txt_file_full_example(self):
+        prt = PrerequisiteTree.from_txt_file('tests/resources/prt/full_example.txt')
+        self.assertEqual(prt.get_total_nr_of_obstacles(), 3)
+
+    def test_create_from_string(self):
+        prt = PrerequisiteTree.from_string("""
+            Repair the handbreak
+                Cannot repair the handbreak
+                    Learn to repair the handbreak
+                        No time to learn
+                    Let someone repair the handbreak
+                        No money
+                            Save money
+            """)
+        self.assertEqual(prt.get_total_nr_of_obstacles(), 3)
+
 if __name__ == '__main__':
     unittest.main()

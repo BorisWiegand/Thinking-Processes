@@ -143,6 +143,21 @@ The resulting diagram looks like this:
 
 ![Prerequisite Tree](https://raw.githubusercontent.com/BorisWiegand/Thinking-Processes/refs/heads/main/prt.png)
 
+Alternatively, you can create the same diagram using a string representation of the tree:
+
+```python
+from thinking_processes import PrerequisiteTree
+prt = PrerequisiteTree.from_string("""
+Repair the handbreak
+    Cannot repair the handbreak
+        Learn to repair the handbreak
+            No time to learn
+        Let someone repair the handbreak
+            No money
+                Save money
+""")
+```
+
 ## Development
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.

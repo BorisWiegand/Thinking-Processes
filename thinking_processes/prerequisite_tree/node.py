@@ -41,6 +41,12 @@ class Obstacle:
         self.__solutions.append(child_node)
         return child_node
     
+    def get_total_nr_of_sub_obstacles(self) -> int:
+        return sum(
+            solution.get_total_nr_of_obstacles()
+            for solution in self.__solutions
+        )
+    
     def add_to_graphviz_graph(self, graph: Digraph, parent_node_id: str):
         graph.node(self.id, self.text, fillcolor='red', style='filled', shape='hexagon')
         graph.edge(self.id, parent_node_id)
@@ -69,6 +75,12 @@ class Solution:
         child_node = Obstacle(f'{self.__id}.{len(self.__obstacles)}', obstacle)
         self.__obstacles.append(child_node)
         return child_node
+    
+    def get_total_nr_of_obstacles(self) -> int:
+        return len(self.__obstacles) + sum(
+            obstacle.get_total_nr_of_sub_obstacles()
+            for obstacle in self.__obstacles
+        )
     
     def add_to_graphviz_graph(self, graph: Digraph, parent_node_id: str):
         graph.node(self.id, self.text, style='rounded', shape='rect')

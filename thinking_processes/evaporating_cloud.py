@@ -14,12 +14,13 @@
     You should have received a copy of the GNU General Public License
     along with thinking-processes. If not, see <https://www.gnu.org/licenses/>.
 '''
-import os
-from tempfile import TemporaryDirectory
 
-from graphviz import Digraph
+from typing import override
+from graphviz import Digraph, Graph
 
-class EvaporatingCloud:
+from thinking_processes.diagram import Diagram
+
+class EvaporatingCloud(Diagram):
     """
     an evaporating cloud, also known as conflict resolution diagram
 
@@ -48,14 +49,8 @@ class EvaporatingCloud:
     def add_assumption_on_need_b(self, text: str, is_true: bool|None = None):
         self.__assumptions_on_need_b.append((text, is_true))
 
-    def plot(self, view: bool = True, filepath: str|None = None):
-        """
-        plots this evaporating cloud.
-
-        Args:
-            view (bool, optional): set to False if you do not want to immediately view the diagram. Defaults to True.
-            filepath (str | None, optional): path to the file in which you want to save the plot. Defaults to None.
-        """
+    @override
+    def to_graphviz(self) -> Graph:
         graph = Digraph(graph_attr=dict(rankdir="RL", nodesep='0.5'))
         graph.node(
             'objective', self.__objective, 
@@ -105,10 +100,7 @@ class EvaporatingCloud:
                     f'assumption_c_{i}', assumption, is_true,
                     'conflict_part_a', 'conflict_part_b'
                 )
-        #we do not want to see the generated .dot code 
-        # => write it to a temporary file
-        with TemporaryDirectory() as tempdir:
-            graph.render(filename=os.path.join(tempdir, 'ec.gv'), view=view, outfile=filepath)
+        return graph
 
     def __add_assumption_node(
             self, graph: Digraph, node_id: str, 

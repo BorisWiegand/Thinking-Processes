@@ -16,11 +16,13 @@
 '''
 import os
 from tempfile import TemporaryDirectory
-from graphviz import Digraph
+from typing import override
+from graphviz import Digraph, Graph
 
 from thinking_processes.prerequisite_tree.node import Obstacle, Solution
+from thinking_processes.diagram import Diagram
 
-class PrerequisiteTree:
+class PrerequisiteTree(Diagram):
     """
     you can use a prerequisite to analyze how to overcome obstacles in order to achieve a desirable effect or goal.
     """
@@ -52,23 +54,13 @@ class PrerequisiteTree:
             for obstacle in self.__obstacles
         )
     
-    def plot(self, view: bool = True, filepath: str|None = None):
-        """
-        plots this prerequisite tree.
-
-        Args:
-            view (bool, optional): set to False if you do not want to immediately view the diagram. Defaults to True.
-            filepath (str | None, optional): path to the file in which you want to save the plot. Defaults to None.
-        """
+    @override
+    def to_graphviz(self) -> Graph:
         graph = Digraph(graph_attr=dict(rankdir="BT"))
         graph.node('objective', self.__objective, fillcolor='green', style='filled,rounded')
         for obstacle in self.__obstacles:
             obstacle.add_to_graphviz_graph(graph, 'objective')
-
-        #we do not want to see the generated .dot code 
-        # => write it to a temporary file
-        with TemporaryDirectory(delete=filepath is not None) as tempdir:
-            graph.render(filename=os.path.join(tempdir, 'prt.gv'), view=view, outfile=filepath)
+        return graph
 
     @staticmethod
     def from_txt_file(path_to_txt: str) -> 'PrerequisiteTree':

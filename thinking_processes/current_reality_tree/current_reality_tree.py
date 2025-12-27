@@ -14,8 +14,6 @@
     You should have received a copy of the GNU General Public License
     along with thinking-processes. If not, see <https://www.gnu.org/licenses/>.
 '''
-import os
-from tempfile import TemporaryDirectory
 import re
 from typing import override
 

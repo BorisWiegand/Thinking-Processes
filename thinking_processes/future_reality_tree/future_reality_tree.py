@@ -14,15 +14,15 @@
     You should have received a copy of the GNU General Public License
     along with thinking-processes. If not, see <https://www.gnu.org/licenses/>.
 '''
-import os
-from tempfile import TemporaryDirectory
+from typing import override
 
-from graphviz import Digraph
+from graphviz import Digraph, Graph
 
 from thinking_processes.future_reality_tree.causal_relation import CausalRelation
 from thinking_processes.future_reality_tree.node import Node
+from thinking_processes.diagram import Diagram
 
-class FutureRealityTree:
+class FutureRealityTree(Diagram):
     """
     you can use a future reality tree to analyze necessary injections that cause a set of desirable effects.
     """
@@ -104,14 +104,8 @@ class FutureRealityTree:
             raise ValueError(f'injection "{effect.text}" must not be an effect')
         self.__causal_relations.append(CausalRelation(causes, effect))
         
-    def plot(self, view: bool = True, filepath: str|None = None):
-        """
-        plots this future reality tree.
-
-        Args:
-            view (bool, optional): set to False if you do not want to immediately view the diagram. Defaults to True.
-            filepath (str | None, optional): path to the file in which you want to save the plot. Defaults to None.
-        """
+    @override
+    def to_graphviz(self) -> Graph:
         graph = Digraph(graph_attr=dict(rankdir="BT"))
         for node in self.__desirable_effects:
             graph.node(node.id, node.text, fillcolor='lightgreen', style='filled,rounded', shape='rect')
@@ -131,9 +125,5 @@ class FutureRealityTree:
                         subgraph.node(mid_of_edge_id, label='', margin='0', height='0', width='0')
                         graph.edge(str(cause.id), mid_of_edge_id, arrowhead='none')
                         graph.edge(mid_of_edge_id, str(relation.effect.id))
-
-        #we do not want to see the generated .dot code 
-        # => write it to a temporary file
-        with TemporaryDirectory() as tempdir:
-            graph.render(filename=os.path.join(tempdir, 'frt.gv'), view=view, outfile=filepath)
+        return graph
     

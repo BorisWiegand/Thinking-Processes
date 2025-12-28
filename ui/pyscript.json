@@ -1,0 +1,11 @@
+{
+    "packages": [
+        "thinking-processes",
+        "puepy"
+    ],
+    "files": {
+        "./app.py": "ui/app.py",
+        "./pages/home_page.py": "ui/pages/home_page.py",
+        "./pages/crt_page.py": "ui/pages/crt_page.py"
+    }
+}

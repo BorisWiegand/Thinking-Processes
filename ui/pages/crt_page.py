@@ -30,9 +30,9 @@ class CrtPage(Page):
 
     def populate(self):
         with t.div(classes=["container", "mx-auto", "p-4"]):
-            with t.div(classes=["grid grid-col-1 md:grid-col-2 gap-4"]):
+            with t.div(classes=["grid grid-col-1 grid-col-2:md gap-4"]):
                 with t.div(id="graph"):
-                    self.state["crt"].get_nr_of_nodes()
+                    t.p(str(self.state["crt"].get_nr_of_nodes()))
                 with t.div(classes=["flex", "flex-row", "gap-4"]):
                     t.sl_textarea(bind="new_node_text")
                     t.sl_button("+", on_click=self.add_new_node)

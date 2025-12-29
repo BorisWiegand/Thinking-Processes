@@ -2,6 +2,9 @@
 requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
+[tool.setuptools.packages.find]
+include = ["thinking_processes*"]
+
 [project]
 name = "thinking-processes"
 version = "1.2.0"
@@ -13,7 +16,7 @@ description = "Diagramming tools for the Thinking Processes from the Theory of C
 readme = "README.md"
 requires-python = ">=3.11"
 license = { file = "LICENSE" }
-keywords = ["TOC", "current reality tree", "evaporation cloud", "conflict resolution diagram"]
+keywords = ["TOC", "theory of constraints", "current reality tree", "evaporation cloud", "conflict resolution diagram", "thinking processes"]
 authors = [{ name = "Boris Wiegand", email = "boris.wiegand@stahl-holding-saar.de" }]
 
 classifiers = [

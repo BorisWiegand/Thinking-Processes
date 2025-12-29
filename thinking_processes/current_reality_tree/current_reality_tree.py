@@ -23,13 +23,13 @@ from thinking_processes.current_reality_tree.causal_relation import CausalRelati
 from thinking_processes.current_reality_tree.node import Node
 from thinking_processes.diagram import Diagram
 
-NODE_ID_PATTERN = re.compile('[1-9]\d*')
+NODE_ID_PATTERN = re.compile(r'[1-9]\d*')
 NODE_LINE_PATTERN = re.compile(rf'{NODE_ID_PATTERN.pattern}:.+')
-RIGHT_ARROW_PATTERN = re.compile('(->|=>)')
-LEFT_ARROW_PATTERN = re.compile('(<-|<=)')
+RIGHT_ARROW_PATTERN = re.compile(r'(->|=>)')
+LEFT_ARROW_PATTERN = re.compile(r'(<-|<=)')
 Y_CAUSED_BY_X_LINE_PATTERN = re.compile(rf'[1-9]\d*\s*{LEFT_ARROW_PATTERN.pattern}(\s*[1-9]\d*,?)+')
 X_CAUSES_Y_LINE_PATTERN = re.compile(rf'(\s*[1-9]\d*,?)+\s*{RIGHT_ARROW_PATTERN.pattern}\s*([1-9]\d*)')
-RELATION_LINE_PATTERN = re.compile(f'({X_CAUSES_Y_LINE_PATTERN.pattern}|{Y_CAUSED_BY_X_LINE_PATTERN.pattern})\s*')
+RELATION_LINE_PATTERN = re.compile(rf'({X_CAUSES_Y_LINE_PATTERN.pattern}|{Y_CAUSED_BY_X_LINE_PATTERN.pattern})\s*')
 NODE_ID_LIST_SEPARATOR_PATTERN = re.compile(r'(\s*,\s*|\s+)')
 
 class CurrentRealityTree(Diagram):

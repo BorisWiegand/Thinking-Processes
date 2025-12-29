@@ -8,5 +8,6 @@ global-include *.cpp
 global-include *.h
 global-exclude *.pyc
 global-exclude *.pyd
+prune ui
 prune tests
 prune venv*

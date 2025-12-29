@@ -15,6 +15,7 @@
     along with thinking-processes. If not, see <https://www.gnu.org/licenses/>.
 '''
 
+from thinking_processes.current_reality_tree.current_reality_tree import CurrentRealityTree
 from ui.app import app
 
 from puepy import Page, t
@@ -22,8 +23,20 @@ from puepy import Page, t
 @app.page("/crt")
 class CrtPage(Page):
     def initial(self):
-        return dict(name="")
+        return dict(
+            new_node_text="",
+            crt=CurrentRealityTree()
+        )
 
     def populate(self):
         with t.div(classes=["container", "mx-auto", "p-4"]):
-            t.sl_text("CRT")
+            with t.div(classes=["grid grid-col-1 md:grid-col-2 gap-4"]):
+                with t.div(id="graph"):
+                    self.state["crt"].get_nr_of_nodes()
+                with t.div(classes=["flex", "flex-row", "gap-4"]):
+                    t.sl_textarea(bind="new_node_text")
+                    t.sl_button("+", on_click=self.add_new_node)
+
+    def add_new_node(self, event):
+        self.state["crt"].add_node(self.state["new_node_text"])
+        self.state["new_node_text"] = ""

@@ -14,29 +14,41 @@
     You should have received a copy of the GNU General Public License
     along with thinking-processes. If not, see <https://www.gnu.org/licenses/>.
 '''
+from pyscript import ffi
+from puepy import Page, t
+from puepy.core import html
 
 from thinking_processes.current_reality_tree.current_reality_tree import CurrentRealityTree
-from ui.app import app
 
-from puepy import Page, t
+from ui.app import app
+from ui.services.diagram_service import DiagramService
 
 @app.page("/crt")
 class CrtPage(Page):
+
     def initial(self):
         return dict(
-            new_node_text="",
             crt=CurrentRealityTree()
         )
 
     def populate(self):
         with t.div(classes=["container", "mx-auto", "p-4"]):
             with t.div(classes=["grid grid-col-1 grid-col-2:md gap-4"]):
-                with t.div(id="graph"):
-                    t.p(str(self.state["crt"].get_nr_of_nodes()))
+                t.div(id="graph", on_click=self.on_click_graph)
                 with t.div(classes=["flex", "flex-row", "gap-4"]):
-                    t.sl_textarea(bind="new_node_text")
+                    t.sl_textarea(ref="new_node_textarea")
                     t.sl_button("+", on_click=self.add_new_node)
 
     def add_new_node(self, event):
-        self.state["crt"].add_node(self.state["new_node_text"])
-        self.state["new_node_text"] = ""
+        self.__get_crt().add_node(self.refs["new_node_textarea"].element.value)
+        self.refs["new_node_textarea"].element.value = ""
+        DiagramService().draw_diagram(self.__get_crt(), 'graph')
+
+    def on_click_graph(self, event):
+        print(event.target)
+        print(dir(event.target))
+        if event.target.tagName == "polygon":
+            event.target.setAttribute("stroke", "lightblue")
+
+    def __get_crt(self) -> CurrentRealityTree:
+        return self.state["crt"]

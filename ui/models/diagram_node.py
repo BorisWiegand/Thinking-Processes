@@ -22,6 +22,7 @@ class DiagramNode:
     def __init__(self, svg_node_id: str):
         self.__svg_node_id = svg_node_id
         self.__original_stroke = self.__get_svg_polygon().getAttribute("stroke")
+        self.__node_id = int(self.__get_svg_node().getElementsByTagName('title')[0].textContent)
 
     def mark_as_selected(self):
         self.__get_svg_polygon().setAttribute("stroke", "lightblue")
@@ -34,3 +35,9 @@ class DiagramNode:
     
     def __get_svg_polygon(self):
         return self.__get_svg_node().getElementsByTagName('polygon')[0]
+    
+    def __eq__(self, other):
+        return isinstance(other, DiagramNode) and self.__svg_node_id == other.__svg_node_id
+    
+    def get_node_id(self) -> int:
+        return self.__node_id

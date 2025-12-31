@@ -87,6 +87,13 @@ class TestCurrentRealityTree(unittest.TestCase):
         self.assertEqual(crt.get_nr_of_nodes(), 12)
         self.assertEqual(crt.get_nr_of_causal_relations(), 6)
 
+    def test_change_text_of_a_node(self):
+        crt = CurrentRealityTree.from_txt_file('tests/resources/crt/wikipedia_example.txt')
+        node_1 = crt.get_node_by_id(1)
+        self.assertEqual(node_1.text, "Car's engine will not start")
+        node_1.text = "The car won't start"
+        self.assertEqual(node_1.text, "The car won't start")
+
     def test_save_as_drawio(self):
         crt = CurrentRealityTree.from_txt_file('tests/resources/crt/wikipedia_example.txt')
         with TemporaryDirectory() as tempdir:

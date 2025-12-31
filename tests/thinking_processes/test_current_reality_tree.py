@@ -79,6 +79,14 @@ class TestCurrentRealityTree(unittest.TestCase):
         self.assertEqual(crt.get_nr_of_nodes(), 13)
         self.assertEqual(crt.get_nr_of_causal_relations(), 10)
 
+    def test_delete_node(self):
+        crt = CurrentRealityTree.from_txt_file('tests/resources/crt/wikipedia_example.txt')
+        self.assertEqual(crt.get_nr_of_nodes(), 13)
+        self.assertEqual(crt.get_nr_of_causal_relations(), 10)
+        crt.delete_node(crt.get_node_by_id(11))
+        self.assertEqual(crt.get_nr_of_nodes(), 12)
+        self.assertEqual(crt.get_nr_of_causal_relations(), 6)
+
     def test_save_as_drawio(self):
         crt = CurrentRealityTree.from_txt_file('tests/resources/crt/wikipedia_example.txt')
         with TemporaryDirectory() as tempdir:

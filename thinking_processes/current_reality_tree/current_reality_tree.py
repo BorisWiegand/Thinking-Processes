@@ -109,6 +109,37 @@ class CurrentRealityTree(Diagram):
     def get_nr_of_causal_relations(self) -> int:
         return len(self.__causal_relations)
     
+    def delete_node(self, node: Node):
+        """
+        deletes a node and all causal relations connected to it.
+
+        Args:
+            node (Node): the node to delete
+        """
+        self.__nodes.remove(node)
+        self.__causal_relations = [
+            cr for cr in self.__causal_relations 
+            if cr.effect != node and node not in cr.causes
+        ]
+    
+    def get_node_by_id(self, node_id: int) -> Node:
+        """
+        retrieves a node by its id.
+
+        Args:
+            node_id (int): the id of the node to retrieve
+
+        Raises:
+            ValueError: if no node with the given id exists
+
+        Returns:
+            Node: the node with the given id
+        """
+        for node in self.__nodes:
+            if node.id == node_id:
+                return node
+        raise ValueError(f'No node with id {node_id} exists')
+
     @staticmethod
     def from_txt_file(path_to_txt: str) -> 'CurrentRealityTree':
         """

@@ -56,7 +56,6 @@ class CrtPage(Page):
                             on_click=self.on_click_delete_node, 
                         ):
                             t.sl_icon(name="trash", slot="prefix")
-                with t.div(classes=["flex", "flex-row", "gap-4"]):
                     with t.sl_tooltip(
                         content="Connect selected node to its causes",
                         style="display: none;",
@@ -81,12 +80,16 @@ class CrtPage(Page):
     def add_new_node(self, event):
         node = self.__get_crt().add_node(self.refs["node_textarea"].element.value)
         self.refs["node_textarea"].element.value = ""
+        self.__redraw_diagram()
+        self.state["nodes"][node.id] = node
+
+    def __redraw_diagram(self):
         DiagramService().draw_diagram(
             self.__get_crt(), 'graph', on_drawn=self.on_diagram_drawn)
-        self.state["nodes"][node.id] = node
 
     def save_edited_node_text(self, event):
         self.state["nodes"][self.state["selected_effect_list"][0].get_node_id()].text = self.refs["node_textarea"].element.value
+        self.__redraw_diagram()
 
     def on_diagram_drawn(self):
         for node in self.state["selected_effect_list"]:
@@ -159,8 +162,7 @@ class CrtPage(Page):
         )
         self.state["selected_causes_list"].clear()
         self.state["selected_effect_list"].clear()
-        DiagramService().draw_diagram(
-            self.__get_crt(), 'graph', on_drawn=self.on_diagram_drawn)
+        self.__redraw_diagram()
 
     def hide_cancel_connect_to_causes_button(self):
         self.refs["cancel_connect_to_causes_button"].element.style.display = "none"
@@ -185,7 +187,11 @@ class CrtPage(Page):
         self.refs["delete_node_button"].element.style.display = "block"
 
     def on_click_delete_node(self, event):
-        print("delete node")
+        node_to_delete = self.state["selected_effect_list"][0]
+        self.__get_crt().delete_node(self.state["nodes"][node_to_delete.get_node_id()])
+        self.state["selected_effect_list"].clear()
+        self.hide_delete_node_button()
+        self.__redraw_diagram()
 
     def __get_crt(self) -> CurrentRealityTree:
         return self.state["crt"]

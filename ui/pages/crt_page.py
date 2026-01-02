@@ -73,7 +73,11 @@ class CrtPage(Page):
                     with t.sl_tooltip(content="Add new node", ref="add_node_button"):
                         with t.sl_button(on_click=self.add_new_node):
                             t.sl_icon(name="plus")
-                    with t.sl_tooltip(content="Save edited text", ref="save_edited_node_text_button"):
+                    with t.sl_tooltip(
+                        content="Save edited text", 
+                        style="display: none;",
+                        ref="save_edited_node_text_button"
+                    ):
                         with t.sl_button(on_click=self.save_edited_node_text):
                             t.sl_icon(name="floppy")
 
@@ -99,7 +103,6 @@ class CrtPage(Page):
         if self.refs["cancel_connect_to_causes_button"].element.style.display == "none":
             self.__select_node_as_effect(event)
         else:
-            print('cause')
             self.__select_node_as_cause(event)
 
     def __select_node_as_effect(self, event):
@@ -113,9 +116,14 @@ class CrtPage(Page):
             self.state["selected_effect_list"].append(selected_node)
             self.show_connect_to_causes_button()
             self.show_delete_node_button()
+            self.show_save_edited_node_text_button()
+            self.hide_add_node_button()
+            self.refs["node_textarea"].element.value = self.state["nodes"][self.state["selected_effect_list"][0].get_node_id()].text
         else:
             self.hide_connect_to_causes_button()
             self.hide_delete_node_button()
+            self.hide_save_edited_node_text_button()
+            self.show_add_node_button()
             self.state["selected_effect_list"].clear()
 
     def __select_node_as_cause(self, event):
@@ -143,6 +151,8 @@ class CrtPage(Page):
         for node in self.state["selected_effect_list"]:
             node.reset_marking()
         self.show_cancel_connect_to_causes_button()
+        self.hide_save_edited_node_text_button()
+        self.hide_delete_node_button()
 
     def hide_confirm_connect_to_causes_button(self):
         self.refs["confirm_connect_to_causes_button"].element.style.display = "none"
@@ -163,6 +173,7 @@ class CrtPage(Page):
         self.state["selected_causes_list"].clear()
         self.state["selected_effect_list"].clear()
         self.__redraw_diagram()
+        self.show_add_node_button()
 
     def hide_cancel_connect_to_causes_button(self):
         self.refs["cancel_connect_to_causes_button"].element.style.display = "none"
@@ -179,6 +190,7 @@ class CrtPage(Page):
             effect.reset_marking()
         self.state["selected_causes_list"].clear()
         self.state["selected_effect_list"].clear()
+        self.show_add_node_button()
 
     def hide_delete_node_button(self):
         self.refs["delete_node_button"].element.style.display = "none"
@@ -191,7 +203,22 @@ class CrtPage(Page):
         self.__get_crt().delete_node(self.state["nodes"][node_to_delete.get_node_id()])
         self.state["selected_effect_list"].clear()
         self.hide_delete_node_button()
+        self.hide_save_edited_node_text_button()
+        self.show_add_node_button()
         self.__redraw_diagram()
+
+    def hide_save_edited_node_text_button(self):
+        self.refs["save_edited_node_text_button"].element.style.display = "none"
+        self.refs["node_textarea"].element.value = ""
+
+    def show_save_edited_node_text_button(self):
+        self.refs["save_edited_node_text_button"].element.style.display = "block"
+
+    def hide_add_node_button(self):
+        self.refs["add_node_button"].element.style.display = "none"
+
+    def show_add_node_button(self):
+        self.refs["add_node_button"].element.style.display = "block"
 
     def __get_crt(self) -> CurrentRealityTree:
         return self.state["crt"]

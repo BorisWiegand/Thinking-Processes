@@ -18,3 +18,8 @@
 .thinking-process-navigation-card img {
     height: 250px;
 }
+
+/* https://shoelace.style/components/button-group#toolbar-example */
+.button-group-toolbar sl-button-group:not(:last-of-type) {
+    margin-right: var(--sl-spacing-x-small);
+}

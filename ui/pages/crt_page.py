@@ -38,6 +38,7 @@ class CrtPage(Page):
                 with t.sl_breadcrumb():
                     t.sl_breadcrumb_item("Thinking Processes", href=".")
                     t.sl_breadcrumb_item("Current Reality Tree")
+                self.__populate_toolbar()
                 t.div(id="graph", on_click=self.on_click_graph)
                 with t.div(classes=["flex", "flex-row", "gap-4"]):
                     with t.sl_button(
@@ -80,6 +81,20 @@ class CrtPage(Page):
                     ):
                         with t.sl_button(on_click=self.save_edited_node_text):
                             t.sl_icon(name="floppy")
+
+    def __populate_toolbar(self):
+        with t.div(classes=["button-group-toolbar"]):
+            with t.sl_button_group(label="Export"):
+                with t.sl_tooltip(content="Save as image"):
+                    with t.sl_button(on_click=self.download_diagram_as_png):
+                        t.sl_icon(name="image")
+                with t.sl_tooltip(content="Save as text file"):
+                    with t.sl_button():
+                        t.sl_icon(name="cloud-download")
+            with t.sl_button_group(label="Import"):
+                with t.sl_tooltip(content="Load diagram"):
+                    with t.sl_button():
+                        t.sl_icon(name="cloud-upload")
 
     def add_new_node(self, event):
         node = self.__get_crt().add_node(self.refs["node_textarea"].element.value)
@@ -222,3 +237,6 @@ class CrtPage(Page):
 
     def __get_crt(self) -> CurrentRealityTree:
         return self.state["crt"]
+    
+    def download_diagram_as_png(self, event):
+        DiagramService().download_diagram_as_png(self.__get_crt())

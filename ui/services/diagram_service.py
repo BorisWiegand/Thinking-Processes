@@ -32,7 +32,7 @@ class DiagramService:
         creates a string representation of the diagram and downloads this string
         as a text file
         """
-        DownloadService().download_txt(diagram.to_string(), file_name)
+        DownloadService().download_text(diagram.to_string(), file_name)
 
     async def __render_graphviz_to_html(self, graphviz_source: str, container_id: str):
         viz = await window.Viz.instance()

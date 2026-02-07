@@ -101,5 +101,10 @@ class TestCurrentRealityTree(unittest.TestCase):
             crt.save_as_drawio(path_to_plot)
             self.assertTrue(os.path.exists(path_to_plot))
 
+    def test_to_string_from_string(self):
+        crt = CurrentRealityTree.from_txt_file('tests/resources/crt/wikipedia_example.txt')
+        crt_recreated = CurrentRealityTree.from_string(crt.to_string())
+        self.assertEqual(crt, crt_recreated)
+
 if __name__ == '__main__':
     unittest.main()

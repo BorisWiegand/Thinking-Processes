@@ -14,6 +14,7 @@
     You should have received a copy of the GNU General Public License
     along with thinking-processes. If not, see <https://www.gnu.org/licenses/>.
 '''
+from itertools import chain
 import re
 from typing import override
 
@@ -156,6 +157,27 @@ class CurrentRealityTree(Diagram):
         with open(path_to_txt, 'r') as f:
             return CurrentRealityTree.from_string(f.read())
 
+    def to_string(self) -> str:
+        """
+        generates a string representation of this diagram. 
+        which in turn can be used in "from_string" to recreate
+        this diagram. 
+        """
+        return '\n'.join(chain(
+            (
+                f'{node.id}: {node.text.replace("\n", "\\n")}'
+                for node in sorted(self.__nodes, key=lambda n: n.id)
+            ),
+            ['\n'],
+            (
+                f"{','.join(str(node.id) for node in causal_relation.causes)} -> {causal_relation.effect.id}"
+                for causal_relation in sorted(self.__causal_relations, key=lambda c: (c.causes, c.effect))
+            )
+        )) 
+    
+    def __repr__(self):
+        return self.to_string()
+
     @staticmethod
     def from_string(s: str) -> 'CurrentRealityTree':
         """
@@ -232,3 +254,9 @@ class CurrentRealityTree(Diagram):
         except KeyError:
             raise ValueError(f'relation contains undefined node: {line}')
         crt.add_causal_relation(x, y)
+
+    def __eq__(self, other):
+        return (
+            isinstance(other, CurrentRealityTree) 
+            and self.to_string() == other.to_string()
+        )

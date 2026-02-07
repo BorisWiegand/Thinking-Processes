@@ -56,3 +56,6 @@ class Node:
     
     def __hash__(self) -> int:
         return hash(self.__id)
+    
+    def __lt__(self, other) -> bool:
+        return self.__id < other.__id

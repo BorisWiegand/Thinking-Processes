@@ -1,5 +1,4 @@
 import asyncio
-import re
 from pyscript import window, document
 
 from thinking_processes.diagram import Diagram
@@ -27,6 +26,13 @@ class DiagramService:
             svg_element = viz.renderSVGElement(str(diagram.to_graphviz()))
             window.saveSvgAsPng(svg_element, file_name)
         asyncio.create_task(task())
+
+    def download_diagram_as_txt(self, diagram: Diagram, file_name: str = 'diagram.txt'):
+        """
+        creates a string representation of the diagram and downloads this string
+        as a text file
+        """
+        DownloadService().download_txt(diagram.to_string(), file_name)
 
     async def __render_graphviz_to_html(self, graphviz_source: str, container_id: str):
         viz = await window.Viz.instance()

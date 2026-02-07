@@ -89,7 +89,7 @@ class CrtPage(Page):
                     with t.sl_button(on_click=self.download_diagram_as_png):
                         t.sl_icon(name="image")
                 with t.sl_tooltip(content="Save as text file"):
-                    with t.sl_button():
+                    with t.sl_button(on_click=self.download_diagram_as_txt):
                         t.sl_icon(name="cloud-download")
             with t.sl_button_group(label="Import"):
                 with t.sl_tooltip(content="Load diagram"):
@@ -240,3 +240,6 @@ class CrtPage(Page):
     
     def download_diagram_as_png(self, event):
         DiagramService().download_diagram_as_png(self.__get_crt())
+    
+    def download_diagram_as_txt(self, event):
+        DiagramService().download_diagram_as_txt(self.__get_crt())

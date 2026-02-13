@@ -121,6 +121,7 @@ class CrtPage(Page):
             self.__select_node_as_effect(event)
         else:
             self.__select_node_as_cause(event)
+        self.__select_edge(event)
 
     def __select_node_as_effect(self, event):
         selected_node = DiagramService().get_node_by_event(event)
@@ -156,6 +157,11 @@ class CrtPage(Page):
             self.show_confirm_connect_to_causes_button()
         else:
             self.hide_confirm_connect_to_causes_button()
+
+    def __select_edge(self, event):
+        selected_edge = DiagramService().get_edge_by_event(event)
+        if selected_edge is not None:
+            selected_edge.mark_as_selected()
 
     def hide_connect_to_causes_button(self):
         self.refs["connect_to_causes_button"].element.style.display = "none"

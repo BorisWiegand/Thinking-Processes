@@ -2,6 +2,7 @@ import asyncio
 from pyscript import window, document
 
 from thinking_processes.diagram import Diagram
+from ui.models.diagram_edge import DiagramEdge
 from ui.models.diagram_node import DiagramNode
 from ui.services.download_service import DownloadService
 
@@ -50,3 +51,13 @@ class DiagramService:
         if not current_node.classList.contains("node"):
             return None
         return DiagramNode(current_node.id)
+
+    def get_edge_by_event(self, event) -> DiagramEdge|None:
+        current_node = event.target
+        while current_node.tagName != "g":
+            if not current_node.parentElement:
+                return None
+            current_node = current_node.parentElement
+        if not current_node.classList.contains("edge"):
+            return None
+        return DiagramEdge(current_node.id)

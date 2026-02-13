@@ -6,6 +6,7 @@
     "files": {
         "./app.py": "ui/app.py",
         "./models/diagram_node.py": "ui/models/diagram_node.py",
+        "./models/diagram_edge.py": "ui/models/diagram_edge.py",
         "./services/diagram_service.py": "ui/services/diagram_service.py",
         "./services/download_service.py": "ui/services/download_service.py",
         "./pages/home_page.py": "ui/pages/home_page.py",

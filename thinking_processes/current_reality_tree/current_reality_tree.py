@@ -54,10 +54,11 @@ class CurrentRealityTree(Diagram):
         Returns:
             Node: the newly created node
         """
-        new_node = Node(
-            len(self.__nodes) if id is None else id,
-            text
-        )
+        if id is None:
+            id = len(self.__nodes) + 1
+        elif id <= 0:
+            raise ValueError(f'id must be a positive integer but was {id}')
+        new_node = Node(id, text)
         self.__nodes.append(new_node)
         return new_node
 

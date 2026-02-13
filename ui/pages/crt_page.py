@@ -14,6 +14,7 @@
     You should have received a copy of the GNU General Public License
     along with thinking-processes. If not, see <https://www.gnu.org/licenses/>.
 '''
+from pyscript import window
 from puepy import Page, t
 
 from thinking_processes.current_reality_tree.current_reality_tree import CurrentRealityTree
@@ -93,8 +94,9 @@ class CrtPage(Page):
                         t.sl_icon(name="cloud-download")
             with t.sl_button_group(label="Import"):
                 with t.sl_tooltip(content="Load diagram"):
-                    with t.sl_button():
+                    with t.sl_button(on_click=lambda _: self.refs["file_input"].element.click()):
                         t.sl_icon(name="cloud-upload")
+                    t.input(type="file", on_change=self.load_diagram_from_file, id="file_input", ref="file_input", style="display: none;")
 
     def add_new_node(self, event):
         node = self.__get_crt().add_node(self.refs["node_textarea"].element.value)
@@ -243,3 +245,11 @@ class CrtPage(Page):
     
     def download_diagram_as_txt(self, event):
         DiagramService().download_diagram_as_txt(self.__get_crt())
+
+    def load_diagram_from_file(self, event):
+        file = self.refs["file_input"].element.files.item(0)
+        if file is not None:
+            print(file)
+            reader = window.FileReader.new()
+            reader.onload = lambda e: CurrentRealityTree.from_string(e.target.result)
+            reader.readAsText(file)

@@ -247,9 +247,11 @@ class CrtPage(Page):
         DiagramService().download_diagram_as_txt(self.__get_crt())
 
     def load_diagram_from_file(self, event):
+        def on_file_loaded(e):
+            self.state["crt"] = CurrentRealityTree.from_string(e.target.result)
+            self.__redraw_diagram()
         file = self.refs["file_input"].element.files.item(0)
         if file is not None:
-            print(file)
             reader = window.FileReader.new()
-            reader.onload = lambda e: CurrentRealityTree.from_string(e.target.result)
+            reader.onload = on_file_loaded
             reader.readAsText(file)

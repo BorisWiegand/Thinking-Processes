@@ -255,9 +255,9 @@ class CrtPage(Page):
 
     def on_click_delete_edge(self, event):
         for edge_to_delete in self.state["selected_edges"]:
-            self.__get_crt().delete_causal_relation(
-                [self.state["nodes"][x] for x in edge_to_delete.from_node_ids],
-                self.state["nodes"][edge_to_delete.to_node_ids[0]]
+            self.__get_crt().remove_cause_from_effect(
+                self.state["nodes"][edge_to_delete.from_node_id],
+                self.state["nodes"][edge_to_delete.to_node_id]
             )
         self.state["selected_edges"].clear()
         self.hide_delete_edge_button()

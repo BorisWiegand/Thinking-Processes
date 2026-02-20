@@ -90,6 +90,22 @@ class CurrentRealityTree(Diagram):
             if not (cr.effect == effect and cr.causes == causes)
         ]
 
+    def remove_cause_from_effect(self, cause: Node, effect: Node):
+        """
+        removes a cause from an effect. if the cause is the only cause of the effect, the whole relation will be deleted.
+
+        Args:
+            cause (Node): the cause to remove
+            effect (Node): the effect to remove the cause from
+        """
+        for causal_relation in self.__causal_relations:
+            if causal_relation.effect == effect and cause in causal_relation.causes:
+                if len(causal_relation.causes) == 1:
+                    self.delete_causal_relation(causal_relation.causes, causal_relation.effect)
+                else:
+                    causal_relation.causes.remove(cause)
+                break
+
     @override
     def to_graphviz(self) -> Graph:
         graph = Digraph(graph_attr=dict(rankdir="BT"))

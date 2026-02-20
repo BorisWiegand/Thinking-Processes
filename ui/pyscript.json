@@ -1,6 +1,6 @@
 {
     "packages": [
-        "thinking-processes==1.4.1",
+        "thinking-processes==1.5.1",
         "puepy"
     ],
     "files": {

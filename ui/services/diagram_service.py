@@ -58,6 +58,7 @@ class DiagramService:
             if not current_node.parentElement:
                 return None
             current_node = current_node.parentElement
-        if not current_node.classList.contains("edge"):
+        if not current_node.classList.contains("edge") \
+        or current_node.getElementsByTagName('polygon').length == 0:
             return None
         return DiagramEdge(current_node.id)

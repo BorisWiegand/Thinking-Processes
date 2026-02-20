@@ -77,6 +77,19 @@ class CurrentRealityTree(Diagram):
             raise ValueError('causes must not be empty')
         self.__causal_relations.append(CausalRelation(causes, effect))
         
+    def delete_causal_relation(self, causes: list[Node], effect: Node):
+        """
+        deletes the causal relation from the given causes to the given effect if it exists.
+
+        Args:
+            causes (list[Node]): the causes of the relation to delete
+            effect (Node): the effect of the relation to delete
+        """
+        self.__causal_relations = [
+            cr for cr in self.__causal_relations 
+            if not (cr.effect == effect and cr.causes == causes)
+        ]
+
     @override
     def to_graphviz(self) -> Graph:
         graph = Digraph(graph_attr=dict(rankdir="BT"))

@@ -87,6 +87,16 @@ class TestCurrentRealityTree(unittest.TestCase):
         self.assertEqual(crt.get_nr_of_nodes(), 12)
         self.assertEqual(crt.get_nr_of_causal_relations(), 6)
 
+    def test_delete_causal_relation(self):
+        crt = CurrentRealityTree.from_txt_file('tests/resources/crt/wikipedia_example.txt')
+        self.assertEqual(crt.get_nr_of_nodes(), 13)
+        self.assertEqual(crt.get_nr_of_causal_relations(), 10)
+        crt.delete_causal_relation([crt.get_node_by_id(11)], crt.get_node_by_id(7))
+        self.assertEqual(crt.get_nr_of_nodes(), 13)
+        self.assertEqual(crt.get_nr_of_causal_relations(), 9)
+        crt.delete_causal_relation([crt.get_node_by_id(11)], crt.get_node_by_id(12))
+        self.assertEqual(crt.get_nr_of_causal_relations(), 9)
+
     def test_change_text_of_a_node(self):
         crt = CurrentRealityTree.from_txt_file('tests/resources/crt/wikipedia_example.txt')
         node_1 = crt.get_node_by_id(1)

@@ -30,6 +30,7 @@ class CrtPage(Page):
             crt=CurrentRealityTree(),
             selected_effect_list=[],
             selected_causes_list=[],
+            selected_edges=[],
             nodes={}
         )
 
@@ -56,6 +57,15 @@ class CrtPage(Page):
                     ):
                         with t.sl_button(
                             on_click=self.on_click_delete_node, 
+                        ):
+                            t.sl_icon(name="trash", slot="prefix")
+                    with t.sl_tooltip(
+                        content="Remove selected edge",
+                        ref="delete_edge_button", 
+                        style="display: none;"
+                    ):
+                        with t.sl_button(
+                            on_click=self.on_click_delete_edge, 
                         ):
                             t.sl_icon(name="trash", slot="prefix")
                     with t.sl_tooltip(
@@ -160,8 +170,15 @@ class CrtPage(Page):
 
     def __select_edge(self, event):
         selected_edge = DiagramService().get_edge_by_event(event)
+        for edge in self.state["selected_edges"]:
+            edge.reset_marking()
+        self.state["selected_edges"].clear()
         if selected_edge is not None:
+            self.state["selected_edges"].append(selected_edge)
             selected_edge.mark_as_selected()
+            self.show_delete_edge_button()
+        else:
+            self.hide_delete_edge_button()
 
     def hide_connect_to_causes_button(self):
         self.refs["connect_to_causes_button"].element.style.display = "none"
@@ -221,6 +238,12 @@ class CrtPage(Page):
     def show_delete_node_button(self):
         self.refs["delete_node_button"].element.style.display = "block"
 
+    def hide_delete_edge_button(self):
+        self.refs["delete_edge_button"].element.style.display = "none"
+
+    def show_delete_edge_button(self):
+        self.refs["delete_edge_button"].element.style.display = "block"
+
     def on_click_delete_node(self, event):
         node_to_delete = self.state["selected_effect_list"][0]
         self.__get_crt().delete_node(self.state["nodes"][node_to_delete.get_node_id()])
@@ -228,6 +251,16 @@ class CrtPage(Page):
         self.hide_delete_node_button()
         self.hide_save_edited_node_text_button()
         self.show_add_node_button()
+        self.__redraw_diagram()
+
+    def on_click_delete_edge(self, event):
+        for edge_to_delete in self.state["selected_edges"]:
+            self.__get_crt().delete_causal_relation(
+                [self.state["nodes"][x] for x in edge_to_delete.from_node_ids],
+                self.state["nodes"][edge_to_delete.to_node_ids[0]]
+            )
+        self.state["selected_edges"].clear()
+        self.hide_delete_edge_button()
         self.__redraw_diagram()
 
     def hide_save_edited_node_text_button(self):

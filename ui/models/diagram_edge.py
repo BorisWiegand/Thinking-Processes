@@ -22,9 +22,11 @@ class DiagramEdge:
     def __init__(self, svg_node_id: str):
         self.__svg_node_id = svg_node_id
         self.__original_edge_color = self.__get_svg_polygon().getAttribute("stroke")
-        self.__from_node_id, self.__to_node_id = (
-            int(x) for x in self.__get_svg_node().getElementsByTagName('title')[0].textContent.split("->")
+        self.from_node_ids, self.to_node_ids = (
+            self.__get_svg_node().getElementsByTagName('title')[0].textContent.split("->")
         )
+        self.from_node_ids = list(map(int,self.from_node_ids.split(",")))
+        self.to_node_ids = list(map(int,self.to_node_ids.split(",")))
 
     def mark_as_selected(self):
         self.__get_svg_polygon().setAttribute("stroke", "lightblue")
@@ -48,7 +50,7 @@ class DiagramEdge:
     def __eq__(self, other):
         return (
             isinstance(other, DiagramEdge) 
-            and self.__from_node_id == other.__from_node_id
-            and self.__to_node_id == other.__to_node_id
+            and self.from_node_ids == other.from_node_ids
+            and self.to_node_ids == other.to_node_ids
         )
     

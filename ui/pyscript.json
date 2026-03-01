@@ -10,6 +10,8 @@
         "./services/diagram_service.py": "ui/services/diagram_service.py",
         "./services/download_service.py": "ui/services/download_service.py",
         "./pages/home_page.py": "ui/pages/home_page.py",
-        "./pages/crt_page.py": "ui/pages/crt_page.py"
+        "./pages/diagram_page.py": "ui/pages/diagram_page.py",
+        "./pages/crt_page.py": "ui/pages/crt_page.py",
+        "./pages/frt_page.py": "ui/pages/frt_page.py"
     }
 }

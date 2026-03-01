@@ -14,118 +14,105 @@
     You should have received a copy of the GNU General Public License
     along with thinking-processes. If not, see <https://www.gnu.org/licenses/>.
 '''
+from typing import override
+
 from pyscript import window
-from puepy import Page, t
+from puepy import t
 
 from thinking_processes.current_reality_tree.current_reality_tree import CurrentRealityTree
 
 from ui.app import app
+from ui.pages.diagram_page import DiagramPage
 from ui.services.diagram_service import DiagramService
 
 @app.page("/crt")
-class CrtPage(Page):
+class CrtPage(DiagramPage[CurrentRealityTree]):
 
+    @override
     def initial(self):
-        return dict(
-            crt=CurrentRealityTree(),
+        return super().initial() | dict(
             selected_effect_list=[],
             selected_causes_list=[],
             selected_edges=[],
-            nodes={}
         )
 
-    def populate(self):
-        with t.div(classes=["container", "mx-auto", "p-4"]):
-            with t.div(classes=["grid grid-cols-1 gap-4"]):
-                with t.sl_breadcrumb():
-                    t.sl_breadcrumb_item("Thinking Processes", href=".")
-                    t.sl_breadcrumb_item("Current Reality Tree")
-                self.__populate_toolbar()
-                t.div(id="graph", on_click=self.on_click_graph)
-                with t.div(classes=["flex", "flex-row", "gap-4"]):
-                    with t.sl_button(
-                        on_click=self.on_click_connect_to_causes, 
-                        ref="connect_to_causes_button", 
-                        style="display: none;"
-                    ):
-                        t.sl_icon(name="link", slot="prefix")
-                        t.raw("Connect to causes")
-                    with t.sl_tooltip(
-                        content="Remove selected node",
-                        ref="delete_node_button", 
-                        style="display: none;"
-                    ):
-                        with t.sl_button(
-                            on_click=self.on_click_delete_node, 
-                        ):
-                            t.sl_icon(name="trash", slot="prefix")
-                    with t.sl_tooltip(
-                        content="Remove selected edge",
-                        ref="delete_edge_button", 
-                        style="display: none;"
-                    ):
-                        with t.sl_button(
-                            on_click=self.on_click_delete_edge, 
-                        ):
-                            t.sl_icon(name="trash", slot="prefix")
-                    with t.sl_tooltip(
-                        content="Connect selected node to its causes",
-                        style="display: none;",
-                        ref="confirm_connect_to_causes_button"):
-                            with t.sl_button(on_click=self.on_click_confirm_connect_to_causes):
-                                t.sl_icon(name="check")
-                    with t.sl_tooltip(
-                        content="Cancel",
-                        style="display: none;",
-                        ref="cancel_connect_to_causes_button"):
-                            with t.sl_button(on_click=self.on_click_cancel_connect_to_causes):
-                                t.sl_icon(name="x")
-                with t.div(classes=["flex", "flex-row", "gap-4"]):
-                    t.sl_textarea(ref="node_textarea", placeholder="Describe an undesired effect or its cause")
-                    with t.sl_tooltip(content="Add new node", ref="add_node_button"):
-                        with t.sl_button(on_click=self.add_new_node):
-                            t.sl_icon(name="plus")
-                    with t.sl_tooltip(
-                        content="Save edited text", 
-                        style="display: none;",
-                        ref="save_edited_node_text_button"
-                    ):
-                        with t.sl_button(on_click=self.save_edited_node_text):
-                            t.sl_icon(name="floppy")
+    @override
+    def _get_diagram_type(self) -> type[CurrentRealityTree]:
+        return CurrentRealityTree
 
-    def __populate_toolbar(self):
-        with t.div(classes=["button-group-toolbar"]):
-            with t.sl_button_group(label="Export"):
-                with t.sl_tooltip(content="Save as image"):
-                    with t.sl_button(on_click=self.download_diagram_as_png):
-                        t.sl_icon(name="image")
-                with t.sl_tooltip(content="Save as text file"):
-                    with t.sl_button(on_click=self.download_diagram_as_txt):
-                        t.sl_icon(name="cloud-download")
-            with t.sl_button_group(label="Import"):
-                with t.sl_tooltip(content="Load diagram"):
-                    with t.sl_button(on_click=lambda _: self.refs["file_input"].element.click()):
-                        t.sl_icon(name="cloud-upload")
-                    t.input(type="file", on_change=self.load_diagram_from_file, id="file_input", ref="file_input", style="display: none;")
+    @override
+    def _get_diagram_type_name(self) -> str: 
+        return 'Current Reality Tree'
+
+    @override
+    def _populate_control_area(self):
+        with t.div(classes=["flex", "flex-row", "gap-4"]):
+            with t.sl_button(
+                on_click=self.on_click_connect_to_causes, 
+                ref="connect_to_causes_button", 
+                style="display: none;"
+            ):
+                t.sl_icon(name="link", slot="prefix")
+                t.raw("Connect to causes")
+            with t.sl_tooltip(
+                content="Remove selected node",
+                ref="delete_node_button", 
+                style="display: none;"
+            ):
+                with t.sl_button(
+                    on_click=self.on_click_delete_node, 
+                ):
+                    t.sl_icon(name="trash", slot="prefix")
+            with t.sl_tooltip(
+                content="Remove selected edge",
+                ref="delete_edge_button", 
+                style="display: none;"
+            ):
+                with t.sl_button(
+                    on_click=self.on_click_delete_edge, 
+                ):
+                    t.sl_icon(name="trash", slot="prefix")
+            with t.sl_tooltip(
+                content="Connect selected node to its causes",
+                style="display: none;",
+                ref="confirm_connect_to_causes_button"):
+                    with t.sl_button(on_click=self.on_click_confirm_connect_to_causes):
+                        t.sl_icon(name="check")
+            with t.sl_tooltip(
+                content="Cancel",
+                style="display: none;",
+                ref="cancel_connect_to_causes_button"):
+                    with t.sl_button(on_click=self.on_click_cancel_connect_to_causes):
+                        t.sl_icon(name="x")
+        with t.div(classes=["flex", "flex-row", "gap-4"]):
+            t.sl_textarea(ref="node_textarea", placeholder="Describe an undesired effect or its cause")
+            with t.sl_tooltip(content="Add new node", ref="add_node_button"):
+                with t.sl_button(on_click=self.add_new_node):
+                    t.sl_icon(name="plus")
+            with t.sl_tooltip(
+                content="Save edited text", 
+                style="display: none;",
+                ref="save_edited_node_text_button"
+            ):
+                with t.sl_button(on_click=self.save_edited_node_text):
+                    t.sl_icon(name="floppy")
 
     def add_new_node(self, event):
-        node = self.__get_crt().add_node(self.refs["node_textarea"].element.value)
+        node = self.get_diagram().add_node(self.refs["node_textarea"].element.value)
         self.refs["node_textarea"].element.value = ""
-        self.__redraw_diagram()
+        self.redraw_diagram()
         self.state["nodes"][node.id] = node
-
-    def __redraw_diagram(self):
-        DiagramService().draw_diagram(
-            self.__get_crt(), 'graph', on_drawn=self.on_diagram_drawn)
 
     def save_edited_node_text(self, event):
         self.state["nodes"][self.state["selected_effect_list"][0].get_node_id()].text = self.refs["node_textarea"].element.value
-        self.__redraw_diagram()
+        self.redraw_diagram()
 
+    @override
     def on_diagram_drawn(self):
         for node in self.state["selected_effect_list"]:
             node.mark_as_selected()
 
+    @override
     def on_click_graph(self, event):
         if self.refs["cancel_connect_to_causes_button"].element.style.display == "none":
             self.__select_node_as_effect(event)
@@ -203,7 +190,7 @@ class CrtPage(Page):
     def on_click_confirm_connect_to_causes(self, event):
         self.hide_confirm_connect_to_causes_button()
         self.hide_cancel_connect_to_causes_button()
-        self.__get_crt().add_causal_relation(
+        self.get_diagram().add_causal_relation(
             [
                 self.state["nodes"][cause.get_node_id()] 
                 for cause in self.state["selected_causes_list"]
@@ -212,7 +199,7 @@ class CrtPage(Page):
         )
         self.state["selected_causes_list"].clear()
         self.state["selected_effect_list"].clear()
-        self.__redraw_diagram()
+        self.redraw_diagram()
         self.show_add_node_button()
 
     def hide_cancel_connect_to_causes_button(self):
@@ -246,22 +233,22 @@ class CrtPage(Page):
 
     def on_click_delete_node(self, event):
         node_to_delete = self.state["selected_effect_list"][0]
-        self.__get_crt().delete_node(self.state["nodes"][node_to_delete.get_node_id()])
+        self.get_diagram().delete_node(self.state["nodes"][node_to_delete.get_node_id()])
         self.state["selected_effect_list"].clear()
         self.hide_delete_node_button()
         self.hide_save_edited_node_text_button()
         self.show_add_node_button()
-        self.__redraw_diagram()
+        self.redraw_diagram()
 
     def on_click_delete_edge(self, event):
         for edge_to_delete in self.state["selected_edges"]:
-            self.__get_crt().remove_cause_from_effect(
+            self.get_diagram().remove_cause_from_effect(
                 self.state["nodes"][edge_to_delete.from_node_id],
                 self.state["nodes"][edge_to_delete.to_node_id]
             )
         self.state["selected_edges"].clear()
         self.hide_delete_edge_button()
-        self.__redraw_diagram()
+        self.redraw_diagram()
 
     def hide_save_edited_node_text_button(self):
         self.refs["save_edited_node_text_button"].element.style.display = "none"
@@ -275,22 +262,3 @@ class CrtPage(Page):
 
     def show_add_node_button(self):
         self.refs["add_node_button"].element.style.display = "block"
-
-    def __get_crt(self) -> CurrentRealityTree:
-        return self.state["crt"]
-    
-    def download_diagram_as_png(self, event):
-        DiagramService().download_diagram_as_png(self.__get_crt())
-    
-    def download_diagram_as_txt(self, event):
-        DiagramService().download_diagram_as_txt(self.__get_crt())
-
-    def load_diagram_from_file(self, event):
-        def on_file_loaded(e):
-            self.state["crt"] = CurrentRealityTree.from_string(e.target.result)
-            self.__redraw_diagram()
-        file = self.refs["file_input"].element.files.item(0)
-        if file is not None:
-            reader = window.FileReader.new()
-            reader.onload = on_file_loaded
-            reader.readAsText(file)

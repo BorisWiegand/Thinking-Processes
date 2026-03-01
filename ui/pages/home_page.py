@@ -20,6 +20,7 @@ from ui.app import app
 from puepy import Page, t
 
 from ui.pages.crt_page import CrtPage
+from ui.pages.frt_page import FrtPage
 
 @app.page()
 class Home(Page):
@@ -41,7 +42,7 @@ class Home(Page):
                     "Future Reality Tree",
                     "../frt.png",
                     "Identify necessary injections that cause a set of desirable effects.",
-                    CrtPage
+                    FrtPage
                 )
                 self.__draw_thinking_process_navigation_card(
                     "Prerequisite Tree",

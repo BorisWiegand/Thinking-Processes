@@ -37,14 +37,24 @@ class FrtPage(DiagramPage[FutureRealityTree]):
     @override
     def _populate_control_area(self):
         with t.div(classes=["flex", "flex-row", "gap-4"]):
-            t.sl_textarea(ref="injection_textarea", placeholder="Describe an injection to achieve some desired effect")
-            with t.sl_tooltip(content="Add an injection", ref="add_injection_button"):
-                with t.sl_button(on_click=self.add_injection):
-                    t.sl_icon(name="plus")
+            t.sl_textarea(ref="node_textarea", placeholder="Add text for creating a new node")
+            with t.div(classes=["flex", "flex-col", "gap-4"]):
+                with t.sl_tooltip(content="Add an injection to achieve some desired effect", ref="add_injection_button"):
+                    with t.sl_button('Add injection', on_click=self.add_injection):
+                        t.sl_icon(name="plus", slot="prefix")
+                with t.sl_tooltip(content="Add an intermediate effect caused by an injection or some other effect", ref="add_intermediate_effect_button"):
+                    with t.sl_button('Add intermediate effect', on_click=self.add_intermediate_effect):
+                        t.sl_icon(name="plus", slot="prefix")
 
     def add_injection(self, event):
-        node = self.get_diagram().add_injection(self.refs["injection_textarea"].element.value)
-        self.refs["injection_textarea"].element.value = ""
+        node = self.get_diagram().add_injection(self.refs["node_textarea"].element.value)
+        self.refs["node_textarea"].element.value = ""
+        self.redraw_diagram()
+        self.state["nodes"][node.id] = node
+
+    def add_intermediate_effect(self, event):
+        node = self.get_diagram().add_intermediate_effect(self.refs["node_textarea"].element.value)
+        self.refs["node_textarea"].element.value = ""
         self.redraw_diagram()
         self.state["nodes"][node.id] = node
 

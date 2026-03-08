@@ -20,6 +20,7 @@ from pyscript import window
 from puepy import t
 
 from thinking_processes.future_reality_tree.future_reality_tree import FutureRealityTree
+from thinking_processes.future_reality_tree.future_reality_tree import Node
 from ui.app import app
 from ui.pages.diagram_page import DiagramPage
 from ui.services.diagram_service import DiagramService
@@ -45,15 +46,26 @@ class FrtPage(DiagramPage[FutureRealityTree]):
                 with t.sl_tooltip(content="Add an intermediate effect caused by an injection or some other effect", ref="add_intermediate_effect_button"):
                     with t.sl_button('Add intermediate effect', on_click=self.add_intermediate_effect):
                         t.sl_icon(name="plus", slot="prefix")
+                with t.sl_tooltip(content="Add a desirable effect", ref="add_desirable_effect_button"):
+                    with t.sl_button('Add desirable effect', on_click=self.add_desirable_effect):
+                        t.sl_icon(name="plus", slot="prefix")
 
     def add_injection(self, event):
-        node = self.get_diagram().add_injection(self.refs["node_textarea"].element.value)
-        self.refs["node_textarea"].element.value = ""
-        self.redraw_diagram()
-        self.state["nodes"][node.id] = node
+        self.__add_node(
+            self.get_diagram().add_injection(self.refs["node_textarea"].element.value)
+        )
 
     def add_intermediate_effect(self, event):
-        node = self.get_diagram().add_intermediate_effect(self.refs["node_textarea"].element.value)
+        self.__add_node(
+            self.get_diagram().add_intermediate_effect(self.refs["node_textarea"].element.value)
+        )
+
+    def add_desirable_effect(self, event):
+        self.__add_node(
+            self.get_diagram().add_desirable_effect(self.refs["node_textarea"].element.value)
+        )
+
+    def __add_node(self, node: Node):
         self.refs["node_textarea"].element.value = ""
         self.redraw_diagram()
         self.state["nodes"][node.id] = node

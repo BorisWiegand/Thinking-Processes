@@ -1,7 +1,8 @@
 {
     "packages": [
         "thinking-processes==1.5.1",
-        "puepy"
+        "puepy",
+        "more-itertools"
     ],
     "files": {
         "./app.py": "ui/app.py",

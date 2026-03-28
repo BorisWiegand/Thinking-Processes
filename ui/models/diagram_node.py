@@ -21,23 +21,30 @@ class DiagramNode:
     
     def __init__(self, svg_node_id: str):
         self.__svg_node_id = svg_node_id
-        self.__original_stroke = self.__get_svg_polygon().getAttribute("stroke")
-        self.__node_id = int(self.__get_svg_node().getElementsByTagName('title')[0].textContent)
+        self.__original_stroke = self.__get_svg_polygon_or_path().getAttribute("stroke")
+        self.__node_id = self.__get_svg_node().getElementsByTagName('title')[0].textContent
+        try:
+            self.__node_id = int(self.__node_id)
+        except ValueError:
+            pass
 
     def mark_as_selected(self):
-        self.__get_svg_polygon().setAttribute("stroke", "lightblue")
+        self.__get_svg_polygon_or_path().setAttribute("stroke", "lightblue")
 
     def reset_marking(self):
-        self.__get_svg_polygon().setAttribute("stroke", self.__original_stroke)
+        self.__get_svg_polygon_or_path().setAttribute("stroke", self.__original_stroke)
 
     def __get_svg_node(self):
         return document.getElementById(self.__svg_node_id)
     
-    def __get_svg_polygon(self):
-        return self.__get_svg_node().getElementsByTagName('polygon')[0]
+    def __get_svg_polygon_or_path(self):
+        try:
+            return self.__get_svg_node().getElementsByTagName('polygon')[0]
+        except IndexError:
+            return self.__get_svg_node().getElementsByTagName('path')[0]
     
     def __eq__(self, other):
         return isinstance(other, DiagramNode) and self.__svg_node_id == other.__svg_node_id
     
-    def get_node_id(self) -> int:
+    def get_node_id(self) -> int|str:
         return self.__node_id

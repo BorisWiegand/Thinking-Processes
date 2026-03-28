@@ -114,7 +114,7 @@ class FutureRealityTree(Diagram):
         for node in self.__injections:
             graph.node(node.id, node.text, fillcolor='lightblue', style='filled', shape='hexagon')
         for node in self.__intermediate_effects:
-            graph.node(node.id, node.text, style='rounded', shape='rect')
+            graph.node(node.id, node.text, fillcolor='white', style='rounded', shape='rect')
         for i,relation in enumerate(self.__causal_relations):
             if len(relation.causes) == 1:
                 graph.edge(str(relation.causes[0].id), str(relation.effect.id))

@@ -97,8 +97,23 @@ class FrtPage(DiagramPage[FutureRealityTree]):
 
     def __add_node(self, node: Node, node_type: str):
         self.refs["node_textarea"].element.value = ""
-        self.redraw_diagram()
         self.state['nodes'][node_type][node.id] = node
+        if node_type in (NODE_TYPE_INTERMEDIATE_EFFECT, NODE_TYPE_DESIRABLE_EFFECT) \
+        and not self.state['selected_nodes'][NODE_TYPE_DESIRABLE_EFFECT] \
+        and (
+            self.state['selected_nodes'][NODE_TYPE_INJECTION]
+            or self.state['selected_nodes'][NODE_TYPE_INTERMEDIATE_EFFECT]
+        ):
+            self.get_diagram().add_causal_relation(
+                [
+                    self.state['nodes'][node_type][selected_node.get_node_id()]
+                    for node_type in [NODE_TYPE_INJECTION, NODE_TYPE_INTERMEDIATE_EFFECT]
+                    for selected_node in self.state['selected_nodes'][node_type]
+                ],
+                node
+            )
+        self.__clear_selection()
+        self.redraw_diagram()
 
     @override
     def _get_diagram_type(self) -> type[FutureRealityTree]:

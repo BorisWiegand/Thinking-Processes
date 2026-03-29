@@ -57,6 +57,15 @@ class FrtPage(DiagramPage[FutureRealityTree]):
     @override
     def _populate_control_area(self):
         with t.div(classes=["flex", "flex-row", "gap-4"]):
+            with t.sl_tooltip(
+                content="Remove selected node",
+                ref="delete_node_button", 
+                style="display: none;"
+            ):
+                with t.sl_button(
+                    on_click=self.on_click_delete_node, 
+                ):
+                    t.sl_icon(name="trash", slot="prefix")
             with t.sl_button(
                 on_click=self.on_click_connect_injections_to_effects, 
                 ref="connect_injections_to_effects_button", 
@@ -166,5 +175,19 @@ class FrtPage(DiagramPage[FutureRealityTree]):
                     self.state['nodes'][effect_node_type][effect_node.get_node_id()]
                 )
         self.__clear_selection()
+        self.redraw_diagram()
+
+    def hide_delete_node_button(self):
+        self.refs["delete_node_button"].element.style.display = "none"
+
+    def show_delete_node_button(self):
+        self.refs["delete_node_button"].element.style.display = "block"
+
+    def on_click_delete_node(self, event):
+        for node_type in [NODE_TYPE_DESIRABLE_EFFECT, NODE_TYPE_INJECTION, NODE_TYPE_INTERMEDIATE_EFFECT]:
+            for node_to_delete in self.state["selected_nodes"][node_type]:
+                self.get_diagram().delete_node(self.state["nodes"][node_type][node_to_delete.get_node_id()])
+        self.__clear_selection()
+        self.hide_delete_node_button()
         self.redraw_diagram()
             

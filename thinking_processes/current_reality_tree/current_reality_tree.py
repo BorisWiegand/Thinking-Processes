@@ -171,22 +171,6 @@ class CurrentRealityTree(Diagram):
                 return node
         raise ValueError(f'No node with id {node_id} exists')
 
-    @staticmethod
-    def from_txt_file(path_to_txt: str) -> 'CurrentRealityTree':
-        """
-        creates a CurrentRealityTree from a .txt file. 
-        See CurrentRealityTree.from_string for the expected file content.
-
-        Args:
-            path_to_txt (str): e.g. 'a_folder/crt.txt'
-
-        Returns:
-            CurrentRealityTree: 
-            a CurrentRealityTree with nodes and relations as defined in the file content.
-        """
-        with open(path_to_txt, 'r') as f:
-            return CurrentRealityTree.from_string(f.read())
-
     def to_string(self) -> str:
         """
         generates a string representation of this diagram. 
@@ -205,9 +189,6 @@ class CurrentRealityTree(Diagram):
             )
         )) 
     
-    def __repr__(self):
-        return self.to_string()
-
     @staticmethod
     def from_string(s: str) -> 'CurrentRealityTree':
         """
@@ -285,8 +266,3 @@ class CurrentRealityTree(Diagram):
             raise ValueError(f'relation contains undefined node: {line}')
         crt.add_causal_relation(x, y)
 
-    def __eq__(self, other):
-        return (
-            isinstance(other, CurrentRealityTree) 
-            and self.to_string() == other.to_string()
-        )

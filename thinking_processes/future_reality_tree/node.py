@@ -16,7 +16,7 @@
 '''
 from dataclasses import dataclass
 
-@dataclass(frozen=True, unsafe_hash=True)
+@dataclass(frozen=True, unsafe_hash=True, order=True)
 class Node:
     """
     node of a future reality tree 

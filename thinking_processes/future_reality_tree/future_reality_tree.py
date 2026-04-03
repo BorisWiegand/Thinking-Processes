@@ -14,9 +14,11 @@
     You should have received a copy of the GNU General Public License
     along with thinking-processes. If not, see <https://www.gnu.org/licenses/>.
 '''
+from itertools import chain
 from typing import override
 
 from graphviz import Digraph, Graph
+from more_itertools import first
 
 from thinking_processes.future_reality_tree.causal_relation import CausalRelation
 from thinking_processes.future_reality_tree.node import Node
@@ -126,4 +128,98 @@ class FutureRealityTree(Diagram):
                         graph.edge(str(cause.id), mid_of_edge_id, arrowhead='none')
                         graph.edge(mid_of_edge_id, str(relation.effect.id))
         return graph
+    
+    @override
+    def to_string(self):
+        return '\n'.join([
+            '\n'.join(
+                f'{node.id}: {node.text}'
+                for node in sorted(chain(
+                    self.__injections,
+                    self.__intermediate_effects, 
+                    self.__desirable_effects, 
+                ))
+            ),
+            '\n'.join(
+                (
+                    f'{causal_relation.effect.id}:{",".join(c.id for c in causal_relation.causes)}:{causal_relation.effect.text}'
+                    if causal_relation.effect in self.__negative_effects
+                    else f'{",".join(c.id for c in causal_relation.causes)} -> {causal_relation.effect.id}'
+                )
+                for causal_relation in sorted(self.__causal_relations, key=lambda c: (c.causes, c.effect))
+            )
+        ])
+    
+    @staticmethod
+    def from_string(s: str) -> 'FutureRealityTree':
+        """
+        parses a new FutureRealityTree from a string.
+
+        Example:
+            | 1: Car's engine will not start
+            | 2: Engine needs fuel in order to run
+            | 3: Fuel is not getting to the engine
+            | 4: There is water in the fuel line
+            | 5: Air conditioning is not working
+            | 6: Air is not able to circulate
+            | 7: The air intake is full of water
+            | 8: Radio sounds distorted
+            | 9: The speakers are obstructed
+            | 10: The speakers are underwater
+            | 11: The car is in the swimming pool
+            | 12: The handbreak is faulty
+            | 13: The handbreak stops the car\\nfrom rolling into the swimming pool
+            | 
+            | 2,3 -> 1
+            | 4 -> 3
+            | 6 => 5
+            | 7 -> 6
+            | 9 -> 8
+            | 10 -> 9
+            | 10 <= 11
+            | 11 <- 12 13
+            | 11 -> 7
+            | 11 -> 4
+
+        Args:
+            s (str): see above for the format
+
+        Raises:
+            ValueError: if there is an error in the format that prevents creating the tree
+
+        Returns:
+            FutureRealityTree: if the format is correct
+        """
+        def get_node_text_from_line(line: str) -> str:
+            return line.split(':', maxsplit=1)[1].strip()
+        frt = FutureRealityTree()
+        for line in s.splitlines():
+            if '->' in line:
+                cause_ids, effect_id = line.split('->')
+                effect_id=effect_id.strip()
+                frt.add_causal_relation(
+                    [
+                        first(node for node in chain(frt.__injections, frt.__intermediate_effects) if node.id == cause_id)
+                        for cause_id in map(str.strip, cause_ids.split(','))
+                    ],
+                    first(node for node in chain(frt.__intermediate_effects, frt.__desirable_effects) if node.id == effect_id)
+                )
+            elif line.startswith('desirable_effect_'):
+                frt.add_desirable_effect(get_node_text_from_line(line))
+            elif line.startswith('injection_'):
+                frt.add_injection(get_node_text_from_line(line))
+            elif line.startswith('intermediate_effect_'):
+                frt.add_intermediate_effect(get_node_text_from_line(line))
+            elif line.startswith('negative_effect_'):
+                try:
+                    _, injection_id, node_text = line.split(':', maxsplit=2)
+                except ValueError as e:
+                    raise ValueError(line) from e
+                frt.add_negative_effect(
+                    first(i for i in frt.__injections if i.id == injection_id),
+                    node_text.strip()
+                )
+            elif line:
+                raise ValueError(f'Cannot parse line: {line}')
+        return frt
     

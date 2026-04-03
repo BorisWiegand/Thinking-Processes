@@ -1,0 +1,25 @@
+desirable_effect_1: Car's engine will start
+
+injection_1: Build a fence between road and pool
+negative_effect_1:injection_1:Car can roll into the fence
+
+intermediate_effect_1: Car parked at the road does not roll into the pool
+intermediate_effect_2: There is no water in the fuel line
+intermediate_effect_3: Fuel is getting to the engine
+
+injection_1->intermediate_effect_1
+intermediate_effect_1->intermediate_effect_2
+intermediate_effect_2->intermediate_effect_3
+intermediate_effect_3->desirable_effect_1
+
+intermediate_effect_4: Air intake is free of water
+intermediate_effect_5: Air is able to circulate
+desirable_effect_2: Air conditioning is working
+intermediate_effect_1->intermediate_effect_4
+intermediate_effect_4->intermediate_effect_5
+intermediate_effect_5->desirable_effect_2
+
+desirable_effect_3: Radio sounds good
+intermediate_effect_6: Speakers are not underwater
+intermediate_effect_1->intermediate_effect_6
+intermediate_effect_6->desirable_effect_3

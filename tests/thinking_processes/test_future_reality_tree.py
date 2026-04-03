@@ -66,5 +66,11 @@ class TestFutureRealityTree(unittest.TestCase):
             frt.plot(view=False, filepath=path_to_plot)
             self.assertTrue(os.path.exists(path_to_plot))
 
+    def test_to_string_from_string(self):
+        frt = FutureRealityTree.from_txt_file('tests/resources/frt/wikipedia_example.txt')
+        print(frt.to_string())
+        frt_recreated = FutureRealityTree.from_string(frt.to_string())
+        self.assertEqual(frt, frt_recreated)
+
 if __name__ == '__main__':
     unittest.main()

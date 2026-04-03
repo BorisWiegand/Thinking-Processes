@@ -97,3 +97,46 @@ class Diagram(ABC):
         Returns:
             Graph: a graphviz Graph of this diagram
         """
+
+    @classmethod                          
+    def from_txt_file(cls, path_to_txt: str) -> 'Diagram':
+        """
+        creates a Diagram from a .txt file. 
+        See <Subclass>.from_string for the expected file content.
+
+        Args:
+            path_to_txt (str): e.g. 'a_folder/crt.txt'
+
+        Returns:
+            Diagram: 
+            a Diagram with nodes and relations as defined in the file content.
+        """
+        with open(path_to_txt, 'r') as f:
+            return cls.from_string(f.read())
+
+    @staticmethod
+    @abstractmethod 
+    def from_string(s: str) -> 'Diagram':
+        """
+        creates a diagram of its string representation. 
+        the specific format is defined by a subclass.  
+        see to_string() for the counterpart to create a string 
+        represenation of this diagram.
+        """
+
+    @abstractmethod
+    def to_string(self) -> str:
+        """
+        generates a string representation of this diagram. 
+        which in turn can be used in "from_string" to recreate
+        this diagram. 
+        """
+
+    def __repr__(self):
+        return self.to_string()
+    
+    def __eq__(self, other):
+        return (
+            type(other) == type(self) 
+            and self.to_string() == other.to_string()
+        )

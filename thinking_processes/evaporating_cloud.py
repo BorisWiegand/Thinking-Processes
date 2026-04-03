@@ -116,3 +116,60 @@ class EvaporatingCloud(Diagram):
         graph.edge(node_id, target_a, dir='none', color='gray')
         if target_b is not None:
             graph.edge(node_id, target_b, dir='none', color='gray')
+
+    def to_string(self):
+        def assumption_state_prefix(assumption_state: bool|None) -> str:
+            if assumption_state is None:
+                return ''
+            elif assumption_state:
+                return 'true_'
+            else:
+                return 'false_'
+        return '\n'.join([
+            f'obj: {self.__objective}',
+            f'need_a: {self.__need_a}',
+            f'need_b: {self.__need_b}',
+            f'conflict_a: {self.__conflict_part_a}',
+            f'conflict_b: {self.__conflict_part_b}',
+        ] + [
+            f'{assumption_state_prefix(assumption_state)}assumption_on_conflict: {assumption}'
+            for assumption, assumption_state in sorted(self.__assumptions_between_conflict_parts)
+        ] + [
+            f'{assumption_state_prefix(assumption_state)}assumption_on_need_a: {assumption}'
+            for assumption, assumption_state in sorted(self.__assumptions_on_need_a)
+        ] + [
+            f'{assumption_state_prefix(assumption_state)}assumption_on_need_b: {assumption}'
+            for assumption, assumption_state in sorted(self.__assumptions_on_need_b)
+        ])
+    
+    @staticmethod
+    def from_string(s: str):
+        ec = EvaporatingCloud()
+        for line in s.splitlines():
+            if line.startswith('obj:'):
+                ec.__objective = line.split(':', maxsplit=1)[1].strip()
+            elif line.startswith('need_a:'):
+                ec.__need_a = line.split(':', maxsplit=1)[1].strip()
+            elif line.startswith('need_b:'):
+                ec.__need_b = line.split(':', maxsplit=1)[1].strip()
+            elif line.startswith('conflict_a:'):
+                ec.__conflict_part_a = line.split(':', maxsplit=1)[1].strip()
+            elif line.startswith('conflict_b:'):
+                ec.__conflict_part_b = line.split(':', maxsplit=1)[1].strip()
+            else:
+                if line.startswith('true_'):
+                    assumption_state = True
+                elif line.startswith('false_'):
+                    assumption_state = False
+                else:
+                    assumption_state = None
+                assumption = line.split(':', maxsplit=1)[1].strip()
+                if 'assumption_on_conflict' in line:
+                    ec.add_assumption_on_the_conflict(assumption, is_true=assumption_state)
+                elif 'assumption_on_need_a' in line:
+                    ec.add_assumption_on_need_a(assumption, is_true=assumption_state)
+                elif 'assumption_on_need_b' in line:
+                    ec.add_assumption_on_need_b(assumption, is_true=assumption_state)
+                else:
+                    raise NotImplementedError(line)
+        return ec

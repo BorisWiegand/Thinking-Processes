@@ -42,5 +42,8 @@ class TestCurrentRealityTree(unittest.TestCase):
             ec.plot(view=False, filepath=path_to_plot)
             self.assertTrue(os.path.exists(path_to_plot))
 
+        recovered_ec = EvaporatingCloud.from_string(ec.to_string())
+        self.assertEqual(ec, recovered_ec)
+
 if __name__ == '__main__':
     unittest.main()

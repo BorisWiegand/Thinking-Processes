@@ -50,7 +50,7 @@ class TestPrerequisiteTree(unittest.TestCase):
         prt = PrerequisiteTree.from_txt_file('tests/resources/prt/full_example.txt')
         self.assertEqual(prt.get_total_nr_of_obstacles(), 3)
 
-    def test_create_from_string(self):
+    def test_create_from_string_to_string(self):
         prt = PrerequisiteTree.from_string("""
             Repair the handbreak
                 Cannot repair the handbreak
@@ -61,6 +61,7 @@ class TestPrerequisiteTree(unittest.TestCase):
                             Save money
             """)
         self.assertEqual(prt.get_total_nr_of_obstacles(), 3)
+        self.assertEqual(prt, PrerequisiteTree.from_string(prt.to_string()))
 
 if __name__ == '__main__':
     unittest.main()

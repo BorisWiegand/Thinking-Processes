@@ -15,6 +15,8 @@
     along with thinking-processes. If not, see <https://www.gnu.org/licenses/>.
 '''
 
+from typing import Iterator
+
 from graphviz import Digraph
 
 
@@ -35,6 +37,9 @@ class Obstacle:
     @property
     def text(self) -> str:
         return self.__obstacle
+
+    def iter_solutions(self) -> Iterator['Solution']:
+        return iter(self.__solutions)
     
     def add_solution(self, solution: str) -> 'Solution':
         child_node = Solution(f'{self.__id}.{len(self.__solutions)}', solution)
@@ -71,6 +76,9 @@ class Solution:
     def text(self) -> str:
         return self.__solution
     
+    def iter_obstacles(self) -> Iterator[Obstacle]:
+        return iter(self.__obstacles)
+
     def add_obstacle(self, obstacle: str) -> Obstacle:
         child_node = Obstacle(f'{self.__id}.{len(self.__obstacles)}', obstacle)
         self.__obstacles.append(child_node)

@@ -14,6 +14,7 @@
     You should have received a copy of the GNU General Public License
     along with thinking-processes. If not, see <https://www.gnu.org/licenses/>.
 '''
+from itertools import repeat
 import os
 from tempfile import TemporaryDirectory
 from typing import override
@@ -136,3 +137,20 @@ class PrerequisiteTree(Diagram):
                             break
         parse_obstacles(prt, 0, 0)
         return prt
+    
+    def to_string(self):
+        def obstacle_to_string(obstacle: Obstacle, level: int) -> str:
+            return "\n".join([
+                f'{"".join(repeat("  ", level))}{obstacle.text}\n'
+            ] + [
+                solution_to_string(s, level + 1)
+                for s in obstacle.iter_solutions()
+            ])
+        def solution_to_string(solution: Solution, level: int) -> str:
+            return "\n".join([
+                f'{"".join(repeat("  ", level))}{solution.text}\n'
+            ] + [
+                obstacle_to_string(o, level + 1)
+                for o in solution.iter_obstacles()
+            ])
+        return f'{self.__objective}\n{"\n".join(map(lambda o: obstacle_to_string(o, 1), self.__obstacles))}'

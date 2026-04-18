@@ -20,6 +20,7 @@ from ui.app import app
 from puepy import Page, t
 
 from ui.pages.crt_page import CrtPage
+from ui.pages.ec_page import EcPage
 from ui.pages.frt_page import FrtPage
 
 @app.page()
@@ -54,7 +55,7 @@ class Home(Page):
                     "Evaporating Cloud",
                     "../ec.png",
                     "Draw a conflict resolution diagram.",
-                    CrtPage
+                    EcPage
                 )
 
     def __draw_thinking_process_navigation_card(

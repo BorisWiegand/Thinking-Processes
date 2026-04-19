@@ -31,11 +31,11 @@ class EvaporatingCloud(Diagram):
             self, objective: str = '?',
             need_a: str = '?', need_b: str = '?',
             conflict_part_a: str = '?', conflict_part_b: str = '?'):
-        self.__objective = objective
-        self.__need_a = need_a
-        self.__need_b = need_b
-        self.__conflict_part_a = conflict_part_a
-        self.__conflict_part_b = conflict_part_b
+        self.objective = objective
+        self.need_a = need_a
+        self.need_b = need_b
+        self.conflict_part_a = conflict_part_a
+        self.conflict_part_b = conflict_part_b
         self.__assumptions_between_conflict_parts: list[tuple[str,bool|None]] = []
         self.__assumptions_on_need_a: list[tuple[str,bool|None]] = []
         self.__assumptions_on_need_b: list[tuple[str,bool|None]] = []
@@ -53,7 +53,7 @@ class EvaporatingCloud(Diagram):
     def to_graphviz(self) -> Graph:
         graph = Digraph(graph_attr=dict(rankdir="RL", nodesep='0.5'))
         graph.node(
-            'objective', self.__objective, 
+            'objective', self.objective, 
             fillcolor='lightgreen', shape='rect', style='rounded,filled',
         )
         with graph.subgraph(graph_attr=dict(concentrate='true', rank='same')) as subgraph:
@@ -65,11 +65,11 @@ class EvaporatingCloud(Diagram):
                 )
         with graph.subgraph(graph_attr=dict(rank="same")) as subgraph:
             subgraph.node(
-                'need_a', self.__need_a, 
+                'need_a', self.need_a, 
                 fillcolor='lightblue', shape='rect', style='rounded,filled',
             )
             subgraph.node(
-                'need_b', self.__need_b, 
+                'need_b', self.need_b, 
                 fillcolor='lightblue', shape='rect', style='rounded,filled',
             )
         graph.edge('need_a', 'objective')
@@ -83,11 +83,11 @@ class EvaporatingCloud(Diagram):
                 )
         with graph.subgraph(graph_attr=dict(rank="same")) as subgraph:
             subgraph.node(
-                'conflict_part_a', self.__conflict_part_a, 
+                'conflict_part_a', self.conflict_part_a, 
                 fillcolor='darkorange', shape='rect', style='rounded,filled',
             )
             subgraph.node(
-                'conflict_part_b', self.__conflict_part_b, 
+                'conflict_part_b', self.conflict_part_b, 
                 fillcolor='darkorange', shape='rect', style='rounded,filled',
             )
             subgraph.edge('conflict_part_a', 'conflict_part_b', dir='both')
@@ -126,11 +126,11 @@ class EvaporatingCloud(Diagram):
             else:
                 return 'false_'
         return '\n'.join([
-            f'obj: {self.__objective}',
-            f'need_a: {self.__need_a}',
-            f'need_b: {self.__need_b}',
-            f'conflict_a: {self.__conflict_part_a}',
-            f'conflict_b: {self.__conflict_part_b}',
+            f'obj: {self.objective}',
+            f'need_a: {self.need_a}',
+            f'need_b: {self.need_b}',
+            f'conflict_a: {self.conflict_part_a}',
+            f'conflict_b: {self.conflict_part_b}',
         ] + [
             f'{assumption_state_prefix(assumption_state)}assumption_on_conflict: {assumption}'
             for assumption, assumption_state in sorted(self.__assumptions_between_conflict_parts)
@@ -147,15 +147,15 @@ class EvaporatingCloud(Diagram):
         ec = EvaporatingCloud()
         for line in s.splitlines():
             if line.startswith('obj:'):
-                ec.__objective = line.split(':', maxsplit=1)[1].strip()
+                ec.objective = line.split(':', maxsplit=1)[1].strip()
             elif line.startswith('need_a:'):
-                ec.__need_a = line.split(':', maxsplit=1)[1].strip()
+                ec.need_a = line.split(':', maxsplit=1)[1].strip()
             elif line.startswith('need_b:'):
-                ec.__need_b = line.split(':', maxsplit=1)[1].strip()
+                ec.need_b = line.split(':', maxsplit=1)[1].strip()
             elif line.startswith('conflict_a:'):
-                ec.__conflict_part_a = line.split(':', maxsplit=1)[1].strip()
+                ec.conflict_part_a = line.split(':', maxsplit=1)[1].strip()
             elif line.startswith('conflict_b:'):
-                ec.__conflict_part_b = line.split(':', maxsplit=1)[1].strip()
+                ec.conflict_part_b = line.split(':', maxsplit=1)[1].strip()
             else:
                 if line.startswith('true_'):
                     assumption_state = True

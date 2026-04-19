@@ -42,17 +42,15 @@ class EcPage(DiagramPage[EvaporatingCloud]):
     def _populate_control_area(self):
         self.redraw_diagram()
         with t.div(classes=["flex", "flex-row", "gap-4"]):
-            t.sl_textarea(ref="node_textarea", placeholder="Add text for creating a new node")
-            # with t.div(classes=["flex", "flex-col", "gap-4"]):
-            #     with t.sl_tooltip(content="Add an injection to achieve some desired effect", ref="add_injection_button"):
-            #         with t.sl_button('Add injection', on_click=self.add_injection):
-            #             t.sl_icon(name="plus", slot="prefix")
-            #     with t.sl_tooltip(content="Add an intermediate effect caused by an injection or some other effect", ref="add_intermediate_effect_button"):
-            #         with t.sl_button('Add intermediate effect', on_click=self.add_intermediate_effect):
-            #             t.sl_icon(name="plus", slot="prefix")
-            #     with t.sl_tooltip(content="Add a desirable effect", ref="add_desirable_effect_button"):
-            #         with t.sl_button('Add desirable effect', on_click=self.add_desirable_effect):
-            #             t.sl_icon(name="plus", slot="prefix")
+            t.sl_textarea(ref="node_textarea", placeholder="Add text for creating a new node", style="display: none")
+            with t.div(classes=["flex", "flex-col", "gap-4"]):
+                with t.sl_tooltip(
+                    content="Save edited text", 
+                    style="display: none;",
+                    ref="save_edited_node_text_button"
+                ):
+                    with t.sl_button(on_click=self.save_edited_node_text):
+                        t.sl_icon(name="floppy")
 
     @override
     def _get_diagram_type(self) -> type[EvaporatingCloud]:
@@ -66,4 +64,34 @@ class EcPage(DiagramPage[EvaporatingCloud]):
             
     @override
     def on_click_graph(self, event):
+        selected_node = DiagramService().get_node_by_event(event)
+        if selected_node is not None:
+            self.show_node_textfield()
+            selected_node.mark_as_selected()
+            if selected_node.get_node_id() == 'objective':
+                node_text = self.get_diagram().objective
+            elif selected_node.get_node_id() == 'need_a':
+                node_text = self.get_diagram().need_a
+            elif selected_node.get_node_id() == 'need_b':
+                node_text = self.get_diagram().need_b
+            elif selected_node.get_node_id() == 'conflict_part_a':
+                node_text = self.get_diagram().conflict_part_a
+            elif selected_node.get_node_id() == 'conflict_part_b':
+                node_text = self.get_diagram().conflict_part_b
+            else:
+                raise NotImplementedError(f'unknown node id "{selected_node.get_node_id()}"')
+            self.refs["node_textarea"].element.placeholder = node_text
+        else:
+            self.clear_selection()
+
+    def hide_node_textfield(self):
+        self.refs["node_textarea"].element.style.display = "none"
+
+    def show_node_textfield(self):
+        self.refs["node_textarea"].element.style.display = "block"
+
+    def clear_selection(self):
+        pass
+
+    def save_edited_node_text(self, event):
         pass

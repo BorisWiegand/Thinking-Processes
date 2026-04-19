@@ -14,12 +14,8 @@
     You should have received a copy of the GNU General Public License
     along with thinking-processes. If not, see <https://www.gnu.org/licenses/>.
 '''
-from itertools import chain
 from typing import override
 
-from more_itertools import first
-
-from pyscript import window
 from puepy import t
 
 from thinking_processes.evaporating_cloud import EvaporatingCloud

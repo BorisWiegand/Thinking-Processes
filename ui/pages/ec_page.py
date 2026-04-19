@@ -56,7 +56,13 @@ class EcPage(DiagramPage[EvaporatingCloud]):
 
     @override
     def _get_diagram_type(self) -> type[EvaporatingCloud]:
-        return EvaporatingCloud
+        return lambda: EvaporatingCloud(
+            'What is the common objective?',
+            'What is the need behind conflicting option A?',
+            'What is the need behind conflicting option B?',
+            'What is the conflicting option A?',
+            'What is the conflicting option B?',
+        )
             
     @override
     def on_click_graph(self, event):

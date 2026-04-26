@@ -31,6 +31,16 @@ class Home(Page):
     def populate(self):
         with t.div(classes=["container", "mx-auto", "p-4"]):
             t.h1("Thinking Processes", classes=["text-2xl", "pb-4"])
+            with t.p(classes=["pb-4"]):
+                t("Welcome to the Thinking Processes webapp! ")
+                t("Analyse and solve problems by drawing diagrams following the ")
+                t.a(
+                    "Thinking Processes (Theory of Constraints)", 
+                    href="https://en.wikipedia.org/wiki/Thinking_processes_(theory_of_constraints)",
+                    classes="underline text-blue-600 hover:text-blue-800"
+                )
+                t(" methodology. ")
+                t("The webapp runs fully in your browser. None of your diagram data will be sent to any server.")
             t.p("What kind of diagram do you want to draw?", classes=["pb-4"])
             with t.div(classes=["grid grid-cols-1", "md:grid-cols-2", "gap-4"]):
                 self.__draw_thinking_process_navigation_card(

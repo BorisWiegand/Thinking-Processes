@@ -28,6 +28,7 @@ class EcPage(DiagramPage[EvaporatingCloud]):
 
     def initial(self):
         return super().initial() | {
+            'selected_node_id': []
         }
 
     @override
@@ -64,21 +65,41 @@ class EcPage(DiagramPage[EvaporatingCloud]):
         if selected_node is not None:
             self.show_node_textfield()
             selected_node.mark_as_selected()
-            if selected_node.get_node_id() == 'objective':
-                node_text = self.get_diagram().objective
-            elif selected_node.get_node_id() == 'need_a':
-                node_text = self.get_diagram().need_a
-            elif selected_node.get_node_id() == 'need_b':
-                node_text = self.get_diagram().need_b
-            elif selected_node.get_node_id() == 'conflict_part_a':
-                node_text = self.get_diagram().conflict_part_a
-            elif selected_node.get_node_id() == 'conflict_part_b':
-                node_text = self.get_diagram().conflict_part_b
-            else:
-                raise NotImplementedError(f'unknown node id "{selected_node.get_node_id()}"')
+            node_text = self.__get_node_text(selected_node.get_node_id())
             self.refs["node_textarea"].element.placeholder = node_text
+            self.show_save_edited_node_text_button()
+            self.state['selected_node_id'].clear()
+            self.state['selected_node_id'].append(selected_node.get_node_id())
         else:
             self.clear_selection()
+
+    def __get_node_text(self, node_id: str) -> str:
+        if node_id == 'objective':
+            return self.get_diagram().objective
+        elif node_id == 'need_a':
+            return self.get_diagram().need_a
+        elif node_id == 'need_b':
+            return self.get_diagram().need_b
+        elif node_id == 'conflict_part_a':
+            return self.get_diagram().conflict_part_a
+        elif node_id == 'conflict_part_b':
+            return self.get_diagram().conflict_part_b
+        else:
+            raise NotImplementedError(f'unknown node id "{node_id}"')
+
+    def __set_node_text(self, node_id: str, text: str):
+        if node_id == 'objective':
+            self.get_diagram().objective = text
+        elif node_id == 'need_a':
+            self.get_diagram().need_a = text
+        elif node_id == 'need_b':
+            self.get_diagram().need_b = text
+        elif node_id == 'conflict_part_a':
+            self.get_diagram().conflict_part_a = text
+        elif node_id == 'conflict_part_b':
+            self.get_diagram().conflict_part_b = text
+        else:
+            raise NotImplementedError(f'unknown node id "{node_id}"')
 
     def hide_node_textfield(self):
         self.refs["node_textarea"].element.style.display = "none"
@@ -86,8 +107,14 @@ class EcPage(DiagramPage[EvaporatingCloud]):
     def show_node_textfield(self):
         self.refs["node_textarea"].element.style.display = "block"
 
+    def hide_save_edited_node_text_button(self):
+        self.refs["save_edited_node_text_button"].element.style.display = "none"
+
+    def show_save_edited_node_text_button(self):
+        self.refs["save_edited_node_text_button"].element.style.display = "block"
+
     def clear_selection(self):
         pass
 
     def save_edited_node_text(self, event):
-        pass
+        self.__set_node_text(self.state['selected_node_id'][0], event.target.value)

@@ -28,7 +28,8 @@ class EcPage(DiagramPage[EvaporatingCloud]):
 
     def initial(self):
         return super().initial() | {
-            'selected_node_id': []
+            'selected_node_id': [],
+            'selected_nodes': []
         }
 
     @override
@@ -48,6 +49,30 @@ class EcPage(DiagramPage[EvaporatingCloud]):
                 ):
                     with t.sl_button(on_click=self.save_edited_node_text):
                         t.sl_icon(name="floppy")
+        with t.div(classes=["flex", "flex-row", "gap-4"]):
+            with t.div(classes=["flex", "flex-col", "gap-4"]):
+                t.sl_label('Add assumption: ')
+            with t.div(classes=["flex", "flex-col", "gap-4"]):
+                with t.sl_tooltip(
+                    content="Add assumption on the first need", 
+                    ref="add_assumption_button_on_need_a"
+                ):
+                    with t.sl_button('on first need', on_click=self.add_assumption_on_need_a):
+                        t.sl_icon(slot='prefix', name="plus")
+            with t.div(classes=["flex", "flex-col", "gap-4"]):
+                with t.sl_tooltip(
+                    content="Add assumption on the second need", 
+                    ref="add_assumption_button_on_need_b"
+                ):
+                    with t.sl_button('on second need', on_click=self.add_assumption_on_need_b):
+                        t.sl_icon(slot='prefix', name="plus")
+            with t.div(classes=["flex", "flex-col", "gap-4"]):
+                with t.sl_tooltip(
+                    content="Add assumption on the conflict", 
+                    ref="add_assumption_button_on_conflict"
+                ):
+                    with t.sl_button('on the conflict', on_click=self.add_assumption_on_conflict):
+                        t.sl_icon(slot='prefix', name="plus")
 
     @override
     def _get_diagram_type(self) -> type[EvaporatingCloud]:
@@ -66,10 +91,12 @@ class EcPage(DiagramPage[EvaporatingCloud]):
             self.show_node_textfield()
             selected_node.mark_as_selected()
             node_text = self.__get_node_text(selected_node.get_node_id())
+            self.refs["node_textarea"].element.value = node_text
             self.refs["node_textarea"].element.placeholder = node_text
             self.show_save_edited_node_text_button()
             self.state['selected_node_id'].clear()
             self.state['selected_node_id'].append(selected_node.get_node_id())
+            self.state['selected_nodes'].append(selected_node)
         else:
             self.clear_selection()
 
@@ -114,7 +141,33 @@ class EcPage(DiagramPage[EvaporatingCloud]):
         self.refs["save_edited_node_text_button"].element.style.display = "block"
 
     def clear_selection(self):
-        pass
+        selected_nodes = self.state['selected_nodes']
+        if selected_nodes:
+            selected_nodes[0].reset_marking()
+            selected_nodes.clear()
+            self.state['selected_node_id'].clear()
 
     def save_edited_node_text(self, event):
-        self.__set_node_text(self.state['selected_node_id'][0], event.target.value)
+        self.__set_node_text(
+            self.state['selected_node_id'][0], 
+            self.refs["node_textarea"].element.value
+        )
+        self.clear_selection()
+        self.hide_node_textfield()
+        self.hide_save_edited_node_text_button()
+        self.redraw_diagram()
+
+    def add_assumption_on_need_a(self, event):
+        self.clear_selection()
+        self.get_diagram().add_assumption_on_need_a('')
+        self.redraw_diagram()
+
+    def add_assumption_on_need_b(self, event):
+        self.clear_selection()
+        self.get_diagram().add_assumption_on_need_b('')
+        self.redraw_diagram()
+
+    def add_assumption_on_conflict(self, event):
+        self.clear_selection()
+        self.get_diagram().add_assumption_on_the_conflict('abc')
+        self.redraw_diagram()

@@ -112,7 +112,7 @@ class EvaporatingCloud(Diagram):
             color = 'green'
         else:
             color = 'red'
-        graph.node(node_id, assumption, color=color)
+        graph.node(node_id, assumption, color=color, fillcolor='white')
         graph.edge(node_id, target_a, dir='none', color='gray')
         if target_b is not None:
             graph.edge(node_id, target_b, dir='none', color='gray')

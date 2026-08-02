@@ -49,6 +49,34 @@ class EvaporatingCloud(Diagram):
     def add_assumption_on_need_b(self, text: str, is_true: bool|None = None):
         self.__assumptions_on_need_b.append((text, is_true))
 
+    def get_total_nr_of_assumptions(self) -> int:
+        return (
+            len(self.__assumptions_between_conflict_parts)
+            + len(self.__assumptions_on_need_a)
+            + len(self.__assumptions_on_need_b)
+        )
+
+    def remove_assumption(self, text: str):
+        """
+        removes any assumption equalling the given text. 
+        if there is no matching node in the diagram, nothing happens.  
+        """
+        self.__assumptions_between_conflict_parts = [
+            (assumption, is_true) 
+            for assumption, is_true in self.__assumptions_between_conflict_parts
+            if assumption != text
+        ]
+        self.__assumptions_on_need_a = [
+            (assumption, is_true) 
+            for assumption, is_true in self.__assumptions_on_need_a
+            if assumption != text
+        ]
+        self.__assumptions_on_need_b = [
+            (assumption, is_true) 
+            for assumption, is_true in self.__assumptions_on_need_b
+            if assumption != text
+        ]
+
     @override
     def to_graphviz(self) -> Graph:
         graph = Digraph(graph_attr=dict(rankdir="RL", nodesep='0.5'))

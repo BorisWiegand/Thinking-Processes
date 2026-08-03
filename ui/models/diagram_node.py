@@ -38,10 +38,12 @@ class DiagramNode:
         return document.getElementById(self.__svg_node_id)
     
     def __get_svg_polygon_or_path(self):
-        try:
-            return self.__get_svg_node().getElementsByTagName('polygon')[0]
-        except IndexError:
-            return self.__get_svg_node().getElementsByTagName('path')[0]
+        svg_node = self.__get_svg_node()
+        for tag_name in ('polygon', 'path', 'ellipse'):
+            element_list = svg_node.getElementsByTagName(tag_name)
+            if element_list:
+                return element_list[0]
+        raise NotImplementedError((self.__svg_node_id, svg_node))
     
     def __eq__(self, other):
         return isinstance(other, DiagramNode) and self.__svg_node_id == other.__svg_node_id

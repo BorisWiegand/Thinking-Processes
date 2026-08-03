@@ -32,7 +32,7 @@ class PrerequisiteTree(Diagram):
         """
         creates a new prerequisite tree with the given objective
         """
-        self.__objective = objective
+        self.objective = objective
         self.__obstacles: list[Obstacle] = []
 
     def add_obstacle(self, obstacle: str) -> Obstacle:
@@ -58,7 +58,7 @@ class PrerequisiteTree(Diagram):
     @override
     def to_graphviz(self) -> Graph:
         graph = Digraph(graph_attr=dict(rankdir="BT"))
-        graph.node('objective', self.__objective, fillcolor='green', style='filled,rounded')
+        graph.node('objective', self.objective, fillcolor='green', style='filled,rounded')
         for obstacle in self.__obstacles:
             obstacle.add_to_graphviz_graph(graph, 'objective')
         return graph
@@ -153,4 +153,18 @@ class PrerequisiteTree(Diagram):
                 obstacle_to_string(o, level + 1)
                 for o in solution.iter_obstacles()
             ])
-        return f'{self.__objective}\n{"\n".join(map(lambda o: obstacle_to_string(o, 1), self.__obstacles))}'
+        return f'{self.objective}\n{"\n".join(map(lambda o: obstacle_to_string(o, 1), self.__obstacles))}'
+
+    def get_node_by_id(self, node_id: str) -> Obstacle|Solution:
+        """
+        returns the node with the given id.
+        The id of a node is a string that is generated when the node is created.
+        Raises an IndexError if no node with the given id exists in this tree. 
+        """
+        candidate_nodes = list(self.__obstacles)
+        while candidate_nodes:
+            node = candidate_nodes.pop()
+            if node.id == node_id:
+                return node
+            candidate_nodes.extend(node.iter_subnodes())
+        raise IndexError(f'no node with id "{node_id}" found in this tree')

@@ -38,7 +38,14 @@ class Obstacle:
     def text(self) -> str:
         return self.__obstacle
 
+    @text.setter
+    def text(self, value: str):
+        self.__obstacle = value
+
     def iter_solutions(self) -> Iterator['Solution']:
+        return iter(self.__solutions)
+
+    def iter_subnodes(self) -> Iterator['Solution']:
         return iter(self.__solutions)
     
     def add_solution(self, solution: str) -> 'Solution':
@@ -75,9 +82,16 @@ class Solution:
     @property
     def text(self) -> str:
         return self.__solution
-    
+
+    @text.setter
+    def text(self, value: str):
+        self.__solution = value
+
     def iter_obstacles(self) -> Iterator[Obstacle]:
         return iter(self.__obstacles)
+
+    def iter_subnodes(self) -> Iterator[Obstacle]:
+            return iter(self.__obstacles)
 
     def add_obstacle(self, obstacle: str) -> Obstacle:
         child_node = Obstacle(f'{self.__id}.{len(self.__obstacles)}', obstacle)

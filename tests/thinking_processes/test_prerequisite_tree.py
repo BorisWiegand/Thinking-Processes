@@ -63,5 +63,27 @@ class TestPrerequisiteTree(unittest.TestCase):
         self.assertEqual(prt.get_total_nr_of_obstacles(), 3)
         self.assertEqual(prt, PrerequisiteTree.from_string(prt.to_string()))
 
+    def test_get_node_by_id(self):
+        prt = PrerequisiteTree(objective='Repair the handbrake')
+        
+        missing_knowledge = prt.add_obstacle('Cannot repair the handbrake')
+
+        learn = missing_knowledge.add_solution('Learn to repair the handbrake')
+        learn.add_obstacle('No time to learn')
+
+        let_repair = missing_knowledge.add_solution('Let someone else repair the handbrake')
+        no_money = let_repair.add_obstacle('No money to let repair the handbrake')
+        no_money.add_solution('Save money')
+
+        node = prt.get_node_by_id('0')
+        self.assertEqual(node.text, 'Cannot repair the handbrake')
+        node.text = 'Cannot repair the handbrake (edited)'
+        node = prt.get_node_by_id('0')
+        self.assertEqual(node.text, 'Cannot repair the handbrake (edited)')
+
+        self.assertEqual(prt.get_node_by_id('0.0').text, 'Learn to repair the handbrake')
+        prt.get_node_by_id('0.0').text = 'Learn to repair the handbrake (edited)'
+        self.assertEqual(prt.get_node_by_id('0.0').text, 'Learn to repair the handbrake (edited)')
+
 if __name__ == '__main__':
     unittest.main()

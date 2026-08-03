@@ -22,6 +22,7 @@ from puepy import Page, t
 from ui.pages.crt_page import CrtPage
 from ui.pages.ec_page import EcPage
 from ui.pages.frt_page import FrtPage
+from ui.pages.prt_page import PrtPage
 
 @app.page()
 class Home(Page):
@@ -59,7 +60,7 @@ class Home(Page):
                     "Prerequisite Tree",
                     "../prt.png",
                     "Overcome obstacles in order to achieve a desirable effect or goal.",
-                    CrtPage
+                    PrtPage
                 )
                 self.__draw_thinking_process_navigation_card(
                     "Evaporating Cloud",

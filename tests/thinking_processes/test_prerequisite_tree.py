@@ -85,5 +85,8 @@ class TestPrerequisiteTree(unittest.TestCase):
         prt.get_node_by_id('0.0').text = 'Learn to repair the handbrake (edited)'
         self.assertEqual(prt.get_node_by_id('0.0').text, 'Learn to repair the handbrake (edited)')
 
+    def test_remove_node(self):
+        self.fail('Not implemented yet')
+
 if __name__ == '__main__':
     unittest.main()

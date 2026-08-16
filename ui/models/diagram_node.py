@@ -50,3 +50,6 @@ class DiagramNode:
     
     def get_node_id(self) -> int|str:
         return self.__node_id
+
+    def get_text(self) -> str:
+        return self.__get_svg_node().getElementsByTagName('text')[0].textContent

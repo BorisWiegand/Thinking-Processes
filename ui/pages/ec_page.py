@@ -20,6 +20,7 @@ from puepy import t
 
 from thinking_processes.evaporating_cloud import EvaporatingCloud
 from ui.app import app
+from ui.models.diagram_node import DiagramNode
 from ui.pages.diagram_page import DiagramPage
 from ui.services.diagram_service import DiagramService
 
@@ -86,35 +87,21 @@ class EcPage(DiagramPage[EvaporatingCloud]):
             
     @override
     def on_click_graph(self, event):
+        self.clear_selection()
         selected_node = DiagramService().get_node_by_event(event)
         if selected_node is not None:
             self.show_node_textfield()
             selected_node.mark_as_selected()
-            node_text = self.__get_node_text(selected_node.get_node_id())
+            node_text = selected_node.get_text()
             self.refs["node_textarea"].element.value = node_text
             self.refs["node_textarea"].element.placeholder = node_text
             self.show_save_edited_node_text_button()
             self.state['selected_node_id'].clear()
             self.state['selected_node_id'].append(selected_node.get_node_id())
             self.state['selected_nodes'].append(selected_node)
-        else:
-            self.clear_selection()
 
-    def __get_node_text(self, node_id: str) -> str:
-        if node_id == 'objective':
-            return self.get_diagram().objective
-        elif node_id == 'need_a':
-            return self.get_diagram().need_a
-        elif node_id == 'need_b':
-            return self.get_diagram().need_b
-        elif node_id == 'conflict_part_a':
-            return self.get_diagram().conflict_part_a
-        elif node_id == 'conflict_part_b':
-            return self.get_diagram().conflict_part_b
-        else:
-            raise NotImplementedError(f'unknown node id "{node_id}"')
-
-    def __set_node_text(self, node_id: str, text: str):
+    def __set_node_text(self, node: DiagramNode, text: str):
+        node_id = node.get_node_id()
         if node_id == 'objective':
             self.get_diagram().objective = text
         elif node_id == 'need_a':
@@ -125,8 +112,16 @@ class EcPage(DiagramPage[EvaporatingCloud]):
             self.get_diagram().conflict_part_a = text
         elif node_id == 'conflict_part_b':
             self.get_diagram().conflict_part_b = text
-        else:
-            raise NotImplementedError(f'unknown node id "{node_id}"')
+        elif node_id.startswith('assumption_'):
+            self.get_diagram().remove_assumption(node.get_text())
+            if '_c_' in node_id:
+                self.get_diagram().add_assumption_on_the_conflict(text)
+            elif '_a_' in node_id:
+                self.get_diagram().add_assumption_on_need_a(text)
+            elif '_b_' in node_id:
+                self.get_diagram().add_assumption_on_need_b(text)
+            else:
+                raise NotImplementedError((node_id, node.get_text(), text))
 
     def hide_node_textfield(self):
         self.refs["node_textarea"].element.style.display = "none"
@@ -149,7 +144,7 @@ class EcPage(DiagramPage[EvaporatingCloud]):
 
     def save_edited_node_text(self, event):
         self.__set_node_text(
-            self.state['selected_node_id'][0], 
+            self.state['selected_nodes'][0], 
             self.refs["node_textarea"].element.value
         )
         self.clear_selection()
@@ -159,15 +154,21 @@ class EcPage(DiagramPage[EvaporatingCloud]):
 
     def add_assumption_on_need_a(self, event):
         self.clear_selection()
-        self.get_diagram().add_assumption_on_need_a('')
+        self.get_diagram().add_assumption_on_need_a(
+            f'Assumption on need {self.get_diagram().get_total_nr_of_assumptions() + 1}'
+        )
         self.redraw_diagram()
 
     def add_assumption_on_need_b(self, event):
         self.clear_selection()
-        self.get_diagram().add_assumption_on_need_b('')
+        self.get_diagram().add_assumption_on_need_b(
+            f'Assumption on need {self.get_diagram().get_total_nr_of_assumptions() + 1}'
+        )
         self.redraw_diagram()
 
     def add_assumption_on_conflict(self, event):
         self.clear_selection()
-        self.get_diagram().add_assumption_on_the_conflict('abc')
+        self.get_diagram().add_assumption_on_the_conflict(
+            f'Assumption on conflict {self.get_diagram().get_total_nr_of_assumptions() + 1}'
+        )
         self.redraw_diagram()

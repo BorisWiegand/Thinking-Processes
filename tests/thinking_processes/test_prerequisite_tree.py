@@ -85,8 +85,24 @@ class TestPrerequisiteTree(unittest.TestCase):
         prt.get_node_by_id('0.0').text = 'Learn to repair the handbrake (edited)'
         self.assertEqual(prt.get_node_by_id('0.0').text, 'Learn to repair the handbrake (edited)')
 
-    def test_remove_node(self):
-        self.fail('Not implemented yet')
+    def test_remove_node_by_id(self):
+        prt = PrerequisiteTree(objective='Repair the handbrake')
+        
+        missing_knowledge = prt.add_obstacle('Cannot repair the handbrake')
+
+        learn = missing_knowledge.add_solution('Learn to repair the handbrake')
+        learn.add_obstacle('No time to learn')
+
+        let_repair = missing_knowledge.add_solution('Let someone else repair the handbrake')
+        no_money = let_repair.add_obstacle('No money to let repair the handbrake')
+        no_money.add_solution('Save money')
+
+        self.assertEqual(prt.get_total_nr_of_obstacles(), 3)
+        self.assertEqual(prt.get_total_nr_of_solutions(), 3)
+
+        prt.remove_node_by_id(no_money.id)
+        self.assertEqual(prt.get_total_nr_of_obstacles(), 2)
+        self.assertEqual(prt.get_total_nr_of_solutions(), 2)
 
 if __name__ == '__main__':
     unittest.main()

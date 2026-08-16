@@ -55,6 +55,12 @@ class PrerequisiteTree(Diagram):
             for obstacle in self.__obstacles
         )
     
+    def get_total_nr_of_solutions(self) -> int:
+        return sum(
+            obstacle.get_total_nr_of_solutions()
+            for obstacle in self.__obstacles
+        )
+
     @override
     def to_graphviz(self) -> Graph:
         graph = Digraph(graph_attr=dict(rankdir="BT"))
@@ -166,5 +172,24 @@ class PrerequisiteTree(Diagram):
             node = candidate_nodes.pop()
             if node.id == node_id:
                 return node
+            candidate_nodes.extend(node.iter_subnodes())
+        raise IndexError(f'no node with id "{node_id}" found in this tree')
+
+    def remove_node_by_id(self, node_id: str):
+        """
+        removes the node with the given id from this tree.
+        Raises an IndexError if no node with the given id exists in this tree. 
+        """
+        candidate_nodes = list(self.__obstacles)
+        while candidate_nodes:
+            node = candidate_nodes.pop()
+            if node.id == node_id:
+                parent_node_id = ".".join(node.id.split(".")[:-1])
+                if parent_node_id:
+                    parent_node = self.get_node_by_id(parent_node_id)
+                    parent_node.remove_subnode_by_id(node_id)
+                else:
+                    self.__obstacles.remove(node)
+                return
             candidate_nodes.extend(node.iter_subnodes())
         raise IndexError(f'no node with id "{node_id}" found in this tree')

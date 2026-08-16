@@ -58,12 +58,24 @@ class Obstacle:
             solution.get_total_nr_of_obstacles()
             for solution in self.__solutions
         )
+
+    def get_total_nr_of_solutions(self) -> int:
+        return len(self.__solutions) + sum(
+            solution.get_total_nr_of_sub_solutions()
+            for solution in self.__solutions
+        )
     
     def add_to_graphviz_graph(self, graph: Digraph, parent_node_id: str):
         graph.node(self.id, self.text, fillcolor='red', style='filled', shape='hexagon')
         graph.edge(self.id, parent_node_id)
         for solution in self.__solutions:
             solution.add_to_graphviz_graph(graph, self.id)
+
+    def remove_subnode_by_id(self, subnode_id: str):
+        self.__solutions = [
+            solution for solution in self.__solutions
+            if solution.id != subnode_id
+        ]
     
 class Solution:
     """ 
@@ -103,10 +115,22 @@ class Solution:
             obstacle.get_total_nr_of_sub_obstacles()
             for obstacle in self.__obstacles
         )
+
+    def get_total_nr_of_sub_solutions(self) -> int:
+        return sum(
+            obstacle.get_total_nr_of_solutions()
+            for obstacle in self.__obstacles
+        )
     
     def add_to_graphviz_graph(self, graph: Digraph, parent_node_id: str):
         graph.node(self.id, self.text, style='rounded', shape='rect')
         graph.edge(self.id, parent_node_id)
         for obstacle in self.__obstacles:
             obstacle.add_to_graphviz_graph(graph, self.id)
+
+    def remove_subnode_by_id(self, subnode_id: str):
+        self.__obstacles = [
+            obstacle for obstacle in self.__obstacles
+            if obstacle.id != subnode_id
+        ]
 

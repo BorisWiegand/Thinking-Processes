@@ -15,8 +15,6 @@
     along with thinking-processes. If not, see <https://www.gnu.org/licenses/>.
 '''
 from itertools import repeat
-import os
-from tempfile import TemporaryDirectory
 from typing import override
 from graphviz import Digraph, Graph
 

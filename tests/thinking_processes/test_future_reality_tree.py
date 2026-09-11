@@ -72,5 +72,16 @@ class TestFutureRealityTree(unittest.TestCase):
         frt_recreated = FutureRealityTree.from_string(frt.to_string())
         self.assertEqual(frt, frt_recreated)
 
+    def test_remove_node_by_id(self):
+        frt = FutureRealityTree.from_txt_file('tests/resources/frt/wikipedia_example.txt')
+        self.assertEqual(11, frt.get_nr_of_nodes())
+        self.assertEqual(10, frt.get_nr_of_causal_relations())
+        frt.remove_node_by_id('intermediate_effect_3')
+        self.assertEqual(10, frt.get_nr_of_nodes())
+        self.assertEqual(8, frt.get_nr_of_causal_relations())
+        frt.remove_node_by_id('intermediate_effect_3')
+        self.assertEqual(10, frt.get_nr_of_nodes())
+        self.assertEqual(8, frt.get_nr_of_causal_relations())
+        
 if __name__ == '__main__':
     unittest.main()

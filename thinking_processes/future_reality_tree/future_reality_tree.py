@@ -223,3 +223,35 @@ class FutureRealityTree(Diagram):
                 raise ValueError(f'Cannot parse line: {line}')
         return frt
     
+    def get_nr_of_nodes(self) -> int:
+        return len(self.__desirable_effects) + len(self.__injections) + len(self.__intermediate_effects) + len(self.__negative_effects)
+    
+    def get_nr_of_causal_relations(self) -> int:
+        return len(self.__causal_relations)
+    
+    def remove_node_by_id(self, node_id: str):
+        """
+        Removes a node from the tree by its ID.
+        If the node is part of any causal relations, those relations will also be removed.
+        If the node does not exist, no error is raised, and the method will simply do nothing.
+        """
+        try:
+            node = self.get_node_by_id(node_id)
+        except ValueError:
+            # node does not exist -> do nothing
+            return
+        self.__desirable_effects.discard(node)
+        self.__injections.discard(node)
+        self.__intermediate_effects.discard(node)
+        self.__negative_effects.discard(node)
+        self.__causal_relations = [cr for cr in self.__causal_relations if cr.effect != node and node not in cr.causes]
+
+    def get_node_by_id(self, node_id: str) -> Node:
+        """
+        returns the node with the given id.
+        if no node with the given id exists, a ValueError is raised.
+        """
+        for node in chain(self.__desirable_effects, self.__injections, self.__intermediate_effects, self.__negative_effects):
+            if node.id == node_id:
+                return node
+        raise ValueError(f'Node with id {node_id} not found')

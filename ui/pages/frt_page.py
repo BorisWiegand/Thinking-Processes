@@ -140,7 +140,6 @@ class FrtPage(DiagramPage[FutureRealityTree]):
                             if s == selected_node
                         ).reset_marking()
                         self.state['selected_nodes'][node_type].remove(selected_node)
-
         else:
             self.__clear_selection()
         if self.state['selected_nodes'][NODE_TYPE_INJECTION] \
@@ -148,6 +147,12 @@ class FrtPage(DiagramPage[FutureRealityTree]):
             self.show_connect_injections_to_effects_button()
         else:
             self.hide_connect_injections_to_effects_button()
+        if self.state['selected_nodes'][NODE_TYPE_INJECTION] \
+        or self.state['selected_nodes'][NODE_TYPE_INTERMEDIATE_EFFECT] \
+        or self.state['selected_nodes'][NODE_TYPE_DESIRABLE_EFFECT]:
+            self.show_delete_node_button()
+        else:
+            self.hide_delete_node_button()
 
     def __clear_selection(self):
         for selected_node_set in self.state['selected_nodes'].values():
@@ -184,7 +189,7 @@ class FrtPage(DiagramPage[FutureRealityTree]):
     def on_click_delete_node(self, event):
         for node_type in [NODE_TYPE_DESIRABLE_EFFECT, NODE_TYPE_INJECTION, NODE_TYPE_INTERMEDIATE_EFFECT]:
             for node_to_delete in self.state["selected_nodes"][node_type]:
-                self.get_diagram().delete_node(self.state["nodes"][node_type][node_to_delete.get_node_id()])
+                self.get_diagram().remove_node_by_id(node_to_delete.get_node_id())
         self.__clear_selection()
         self.hide_delete_node_button()
         self.redraw_diagram()

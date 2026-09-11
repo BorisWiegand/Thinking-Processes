@@ -68,6 +68,14 @@ class PrtPage(DiagramPage[PrerequisiteTree]):
                 ):
                     with t.sl_button(on_click=self.add_solution_node):
                         t.sl_icon(name="lightbulb")
+                with t.sl_tooltip(
+                    content="Delete node", 
+                    style="display: none;",
+                    ref="delete_node_button"
+                ):
+                    with t.sl_button(on_click=self.delete_node):
+                        t.sl_icon(name="trash")
+                
 
     @override
     def on_click_graph(self, event):
@@ -84,6 +92,7 @@ class PrtPage(DiagramPage[PrerequisiteTree]):
                 self.show_add_obstacle_button()
             else:
                 node = self.get_diagram().get_node_by_id(str(selected_node.get_node_id()))
+                self.show_delete_button()
                 if isinstance(node, Obstacle):
                     self.show_add_solution_button()
                 else:
@@ -116,6 +125,7 @@ class PrtPage(DiagramPage[PrerequisiteTree]):
         self.hide_save_node_text_button()
         self.hide_add_obstacle_button()
         self.hide_add_solution_button()
+        self.hide_delete_button()
         self.redraw_diagram()
 
     def hide_node_textfield(self):
@@ -141,6 +151,12 @@ class PrtPage(DiagramPage[PrerequisiteTree]):
 
     def show_add_solution_button(self):
         self.refs["add_solution_button"].element.style.display = "block"
+    
+    def hide_delete_button(self):
+        self.refs["delete_node_button"].element.style.display = "none"
+
+    def show_delete_button(self):
+        self.refs["delete_node_button"].element.style.display = "block"
 
     def add_obstacle_node(self, event):
         selected_node = self.state['selected_nodes'][0]
@@ -157,6 +173,11 @@ class PrtPage(DiagramPage[PrerequisiteTree]):
             node.add_solution('New Solution')
         else:
             raise NotImplementedError(node.get_node_id())
+        self.clear_selection()
+
+    def delete_node(self, event):
+        selected_node = self.state['selected_nodes'][0]
+        self.get_diagram().remove_node_by_id(str(selected_node.get_node_id()))
         self.clear_selection()
 
 

@@ -1,5 +1,6 @@
 import asyncio
 from pyscript import window, document
+from pyodide.ffi.wrappers import add_event_listener
 
 from thinking_processes.diagram import Diagram
 from ui.models.diagram_edge import DiagramEdge
@@ -17,6 +18,7 @@ class DiagramService:
         )
         if on_drawn is not None:
             task.add_done_callback(lambda _: on_drawn())
+            task.add_done_callback(lambda _: self.__prevent_native_title_tooltip_on_diagram_nodes(container_id))
 
     def download_diagram_as_png(self, diagram: Diagram, file_name: str = "diagram.png"):
         """
@@ -42,6 +44,16 @@ class DiagramService:
         container.innerHTML = ""
         container.append(svg_element)
 
+    def __prevent_native_title_tooltip_on_diagram_nodes(self, container_id: str):
+        """ 
+        disable native title tooltips on diagram nodes, because this would show the node id to the user,
+        but keep clicks/other events intact.
+        """
+        for title in document.querySelectorAll(f'#{container_id} .node > title'):
+            nodeid = document.createElementNS('http://www.w3.org/2000/svg', 'nodeid')
+            nodeid.textContent = title.textContent
+            title.replaceWith(nodeid)
+    
     def get_node_by_event(self, event) -> DiagramNode|None:
         current_node = event.target
         while current_node.tagName != "g":

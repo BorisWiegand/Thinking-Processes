@@ -22,7 +22,7 @@ class DiagramEdge:
     def __init__(self, svg_node_id: str):
         self.__svg_node_id = svg_node_id
         self.__original_edge_color = self.__get_svg_polygon().getAttribute("stroke")
-        self.from_node_id, self.to_node_id = self.__get_svg_node().getElementsByTagName('title')[0].textContent.split("->")
+        self.from_node_id, self.to_node_id = self.__get_svg_node().getElementsByTagName('nodeid')[0].textContent.split("->")
         if '-' in self.from_node_id:
             self.from_node_id = int(self.from_node_id.split("-")[0])
         else:

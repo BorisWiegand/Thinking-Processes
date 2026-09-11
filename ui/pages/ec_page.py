@@ -50,6 +50,13 @@ class EcPage(DiagramPage[EvaporatingCloud]):
                 ):
                     with t.sl_button(on_click=self.save_edited_node_text):
                         t.sl_icon(name="floppy")
+                with t.sl_tooltip(
+                    content="Delete assumption", 
+                    style="display: none;",
+                    ref="delete_assumption_button"
+                ):
+                    with t.sl_button(on_click=self.delete_assumption):
+                        t.sl_icon(name="trash")
         with t.div(classes=["flex", "flex-row", "gap-4"]):
             with t.div(classes=["flex", "flex-col", "gap-4"]):
                 t.sl_label('Add assumption: ')
@@ -99,6 +106,8 @@ class EcPage(DiagramPage[EvaporatingCloud]):
             self.state['selected_node_id'].clear()
             self.state['selected_node_id'].append(selected_node.get_node_id())
             self.state['selected_nodes'].append(selected_node)
+            if selected_node.get_node_id().startswith('assumption_'):
+                self.show_delete_assumption_button()
 
     def __set_node_text(self, node: DiagramNode, text: str):
         node_id = node.get_node_id()
@@ -150,6 +159,7 @@ class EcPage(DiagramPage[EvaporatingCloud]):
         self.clear_selection()
         self.hide_node_textfield()
         self.hide_save_edited_node_text_button()
+        self.hide_delete_assumption_button()
         self.redraw_diagram()
 
     def add_assumption_on_need_a(self, event):
@@ -172,3 +182,17 @@ class EcPage(DiagramPage[EvaporatingCloud]):
             f'Assumption on conflict {self.get_diagram().get_total_nr_of_assumptions() + 1}'
         )
         self.redraw_diagram()
+
+    def delete_assumption(self, event):
+        self.get_diagram().remove_assumption(self.state['selected_nodes'][0].get_text())
+        self.clear_selection()
+        self.hide_node_textfield()
+        self.hide_save_edited_node_text_button()
+        self.hide_delete_assumption_button()
+        self.redraw_diagram()
+
+    def hide_delete_assumption_button(self):
+        self.refs["delete_assumption_button"].element.style.display = "none"
+
+    def show_delete_assumption_button(self):
+        self.refs["delete_assumption_button"].element.style.display = "block"

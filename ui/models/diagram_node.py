@@ -22,7 +22,7 @@ class DiagramNode:
     def __init__(self, svg_node_id: str):
         self.__svg_node_id = svg_node_id
         self.__original_stroke = self.__get_svg_polygon_or_path().getAttribute("stroke")
-        self.__node_id = self.__get_svg_node().getElementsByTagName('title')[0].textContent
+        self.__node_id = self.__get_svg_node().getElementsByTagName('nodeid')[0].textContent
         try:
             self.__node_id = int(self.__node_id)
         except ValueError:

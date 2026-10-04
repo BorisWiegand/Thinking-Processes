@@ -16,7 +16,6 @@
 '''
 from typing import override
 
-from pyscript import window
 from puepy import t
 
 from thinking_processes.current_reality_tree.current_reality_tree import CurrentRealityTree

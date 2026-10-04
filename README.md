@@ -1,7 +1,10 @@
 # Thinking Processes
 
 This Python package helps you to draw diagrams used in the Thinking Processes from the Theory of Constraints. 
-For more information, see https://en.wikipedia.org/wiki/Thinking_processes_(theory_of_constraints) 
+For more information about the Thinking Processes, visit https://en.wikipedia.org/wiki/Thinking_processes_(theory_of_constraints). 
+See below for different kinds of diagrams, which you can create using this diagram-as-code package.  
+
+Instead of writing code, you can alternatively use the web interface under https://boriswiegand.github.io/Thinking-Processes/ui/.
 
 ### Prerequisites
 

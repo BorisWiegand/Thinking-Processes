@@ -30,11 +30,15 @@ class CrtPage(DiagramPage[CurrentRealityTree]):
 
     @override
     def initial(self):
-        return super().initial() | dict(
+        initial_state = super().initial()
+        for node in self.get_diagram().get_nodes():
+            initial_state["nodes"][node.id] = node
+        initial_state.update(dict(
             selected_effect_list=[],
             selected_causes_list=[],
             selected_edges=[],
-        )
+        ))
+        return initial_state
 
     @override
     def _get_diagram_type(self) -> type[CurrentRealityTree]:
@@ -109,6 +113,7 @@ class CrtPage(DiagramPage[CurrentRealityTree]):
 
     @override
     def on_diagram_drawn(self):
+        super().on_diagram_drawn()
         for node in self.state["selected_effect_list"]:
             node.mark_as_selected()
 

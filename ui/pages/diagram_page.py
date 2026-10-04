@@ -16,9 +16,10 @@
 '''
 
 from abc import ABC, abstractmethod
+import json
 from typing import Generic, TypeVar
 
-from pyscript import window
+from pyscript import window, ffi
 from puepy import Page, t
 
 from ui.services.diagram_service import DiagramService
@@ -28,10 +29,21 @@ T = TypeVar('T')
 class DiagramPage(ABC, Page, Generic[T]):
 
     def initial(self):
-        return dict(
-            diagram=self._get_diagram_type()(),
-            nodes={}
-        )
+        if not ffi.is_none(self.application.local_storage.get(self.__get_storage_key())):
+            return dict(
+                diagram=self._get_diagram_type().from_string(
+                    self.application.local_storage.get(self.__get_storage_key())
+                ),
+                nodes={}
+            )
+        else:
+            return dict(
+                diagram=self._get_diagram_type()(),
+                nodes={}
+            )
+
+    def __get_storage_key(self) -> str:
+        return self._get_diagram_type_name().lower().replace(" ", "_")
 
     def populate(self):
         with t.div(classes=["container", "mx-auto", "p-4"]):
@@ -42,6 +54,7 @@ class DiagramPage(ABC, Page, Generic[T]):
                 self.__populate_toolbar()
                 t.div(id="graph", on_click=self.on_click_graph)
                 self._populate_control_area()
+        self.redraw_diagram()
 
     @abstractmethod
     def _get_diagram_type_name(self) -> str:
@@ -87,6 +100,7 @@ class DiagramPage(ABC, Page, Generic[T]):
         return self.state['diagram']
     
     def redraw_diagram(self):
+        self.application.local_storage[self.__get_storage_key()] = self.get_diagram().to_string()
         DiagramService().draw_diagram(
             self.get_diagram(), 'graph', on_drawn=self.on_diagram_drawn)
         

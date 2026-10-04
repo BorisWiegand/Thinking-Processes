@@ -7,7 +7,7 @@ include = ["thinking_processes*"]
 
 [project]
 name = "thinking-processes"
-version = "1.8.2"
+version = "1.8.3"
 dependencies = [
   "graphviz",
   "drawpyo"

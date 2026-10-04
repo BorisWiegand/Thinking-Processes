@@ -62,6 +62,15 @@ class CurrentRealityTree(Diagram):
         self.__nodes.append(new_node)
         return new_node
 
+    def get_nodes(self) -> list[Node]:
+        """
+        returns all nodes of this current reality tree
+
+        Returns:
+            list[Node]: all nodes of this current reality tree
+        """
+        return self.__nodes
+
     def add_causal_relation(self, causes: list[Node], effect: Node):
         """
         adds a causal relation (an arrow) from a list of causes to an effect.

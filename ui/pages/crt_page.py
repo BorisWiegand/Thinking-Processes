@@ -30,7 +30,7 @@ class CrtPage(DiagramPage[CurrentRealityTree]):
     @override
     def initial(self):
         initial_state = super().initial()
-        for node in self.get_diagram().get_nodes():
+        for node in initial_state['diagram'].get_nodes():
             initial_state["nodes"][node.id] = node
         initial_state.update(dict(
             selected_effect_list=[],

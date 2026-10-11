@@ -83,6 +83,10 @@ class DiagramPage(ABC, Page, Generic[T]):
 
     def __populate_toolbar(self):
         with t.div(classes=["button-group-toolbar"]):
+            with t.sl_button_group(label="Control"):
+                with t.sl_tooltip(content="Clear diagram"):
+                    with t.sl_button(on_click=self.clear_diagram):
+                        t.sl_icon(name="trash")
             with t.sl_button_group(label="Export"):
                 with t.sl_tooltip(content="Save as image"):
                     with t.sl_button(on_click=self.download_diagram_as_png):
@@ -122,3 +126,8 @@ class DiagramPage(ABC, Page, Generic[T]):
     
     def download_diagram_as_txt(self, event):
         DiagramService().download_diagram_as_txt(self.get_diagram())
+
+    def clear_diagram(self, event):
+        self.state["diagram"] = self._get_diagram_type()()
+        self.state["nodes"].clear()
+        self.redraw_diagram()

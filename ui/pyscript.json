@@ -1,6 +1,6 @@
 {
     "packages": [
-        "thinking-processes==1.8.3",
+        "thinking-processes==1.9.0",
         "puepy",
         "more-itertools"
     ],

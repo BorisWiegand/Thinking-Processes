@@ -43,20 +43,44 @@ class EcPage(DiagramPage[EvaporatingCloud]):
         with t.div(classes=["flex", "flex-row", "gap-4"]):
             t.sl_textarea(ref="node_textarea", placeholder="Add text for creating a new node", style="display: none")
             with t.div(classes=["flex", "flex-col", "gap-4"]):
-                with t.sl_tooltip(
-                    content="Save edited text", 
-                    style="display: none;",
-                    ref="save_edited_node_text_button"
-                ):
-                    with t.sl_button(on_click=self.save_edited_node_text):
-                        t.sl_icon(name="floppy")
-                with t.sl_tooltip(
-                    content="Delete assumption", 
-                    style="display: none;",
-                    ref="delete_assumption_button"
-                ):
-                    with t.sl_button(on_click=self.delete_assumption):
-                        t.sl_icon(name="trash")
+                with t.div(classes=["flex", "flex-row", "gap-4"]):
+                    with t.sl_tooltip(
+                        content="Save edited text", 
+                        style="display: none;",
+                        ref="save_edited_node_text_button"
+                    ):
+                        with t.sl_button(on_click=self.save_edited_node_text):
+                            t.sl_icon(name="floppy")
+                    with t.sl_tooltip(
+                        content="Delete assumption", 
+                        style="display: none;",
+                        ref="delete_assumption_button"
+                    ):
+                        with t.sl_button(on_click=self.delete_assumption):
+                            t.sl_icon(name="trash")
+                with t.div(classes=["flex", "flex-row", "gap-4"]):
+                    with t.sl_tooltip(
+                        content="Confirm assumption", 
+                        style="display: none;",
+                        ref="confirm_assumption_button"
+                    ):
+                        with t.sl_button(on_click=self.confirm_assumption):
+                            t.sl_icon(name="check")
+                    with t.sl_tooltip(
+                        content="Deny assumption", 
+                        style="display: none;",
+                        ref="deny_assumption_button"
+                    ):
+                        with t.sl_button(on_click=self.deny_assumption):
+                            t.sl_icon(name="x")
+                    with t.sl_tooltip(
+                        content="Mark assumption as unchecked", 
+                        style="display: none;",
+                        ref="mark_assumption_unchecked_button"
+                    ):
+                        with t.sl_button(on_click=self.mark_assumption_unchecked):
+                            t.sl_icon(name="question")
+                    
         with t.div(classes=["flex", "flex-row", "gap-4"]):
             with t.div(classes=["flex", "flex-col", "gap-4"]):
                 t.sl_label('Add assumption: ')
@@ -111,6 +135,9 @@ class EcPage(DiagramPage[EvaporatingCloud]):
             self.state['selected_nodes'].append(selected_node)
             if selected_node.get_node_id().startswith('assumption_'):
                 self.show_delete_assumption_button()
+                self.show_confirm_assumption_button()
+                self.show_deny_assumption_button()
+                self.show_mark_assumption_unchecked_button()
 
     def __set_node_text(self, node: DiagramNode, text: str):
         node_id = node.get_node_id()
@@ -163,6 +190,9 @@ class EcPage(DiagramPage[EvaporatingCloud]):
         self.hide_node_textfield()
         self.hide_save_edited_node_text_button()
         self.hide_delete_assumption_button()
+        self.hide_confirm_assumption_button()
+        self.hide_deny_assumption_button()
+        self.hide_mark_assumption_unchecked_button()
         self.redraw_diagram()
 
     def add_assumption_on_need_a(self, event):
@@ -188,10 +218,29 @@ class EcPage(DiagramPage[EvaporatingCloud]):
 
     def delete_assumption(self, event):
         self.get_diagram().remove_assumption(self.state['selected_nodes'][0].get_text())
+        self.__redraw_diagram_after_assumption_change()
+
+    def confirm_assumption(self, event):
+        self.__set_assumption_truth_value(True)
+
+    def deny_assumption(self, event):
+        self.__set_assumption_truth_value(False)
+
+    def mark_assumption_unchecked(self, event):
+        self.__set_assumption_truth_value(None)
+
+    def __set_assumption_truth_value(self, truth_value: bool|None):
+        self.get_diagram().set_assumption_truth_value(self.state['selected_nodes'][0].get_text(), truth_value)
+        self.__redraw_diagram_after_assumption_change()
+
+    def __redraw_diagram_after_assumption_change(self):
         self.clear_selection()
         self.hide_node_textfield()
         self.hide_save_edited_node_text_button()
         self.hide_delete_assumption_button()
+        self.hide_confirm_assumption_button()
+        self.hide_deny_assumption_button()
+        self.hide_mark_assumption_unchecked_button()
         self.redraw_diagram()
 
     def hide_delete_assumption_button(self):
@@ -199,3 +248,21 @@ class EcPage(DiagramPage[EvaporatingCloud]):
 
     def show_delete_assumption_button(self):
         self.refs["delete_assumption_button"].element.style.display = "block"
+
+    def hide_confirm_assumption_button(self):
+        self.refs["confirm_assumption_button"].element.style.display = "none"
+
+    def show_confirm_assumption_button(self):
+        self.refs["confirm_assumption_button"].element.style.display = "block"
+
+    def hide_deny_assumption_button(self):
+        self.refs["deny_assumption_button"].element.style.display = "none"
+
+    def show_deny_assumption_button(self):
+        self.refs["deny_assumption_button"].element.style.display = "block"
+
+    def hide_mark_assumption_unchecked_button(self):
+        self.refs["mark_assumption_unchecked_button"].element.style.display = "none"
+
+    def show_mark_assumption_unchecked_button(self):
+        self.refs["mark_assumption_unchecked_button"].element.style.display = "block"

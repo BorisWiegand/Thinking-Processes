@@ -77,6 +77,40 @@ class EvaporatingCloud(Diagram):
             if assumption != text
         ]
 
+    def set_assumption_truth_value(self, text: str, is_true: bool|None):
+        """
+        sets the truth value of any assumption equalling the given text. 
+        if there is no matching node in the diagram, nothing happens.  
+        """
+        self.__assumptions_between_conflict_parts = [
+            (assumption, is_true if assumption == text else current_is_true) 
+            for assumption, current_is_true in self.__assumptions_between_conflict_parts
+        ]
+        self.__assumptions_on_need_a = [
+            (assumption, is_true if assumption == text else current_is_true) 
+            for assumption, current_is_true in self.__assumptions_on_need_a
+        ]
+        self.__assumptions_on_need_b = [
+            (assumption, is_true if assumption == text else current_is_true) 
+            for assumption, current_is_true in self.__assumptions_on_need_b
+        ]
+
+    def get_assumption_truth_value(self, text: str) -> bool|None:
+        """
+        returns the truth value of any assumption equalling the given text. 
+        if there is no matching node in the diagram, a ValueError is raised.  
+        """
+        for assumption, is_true in self.__assumptions_between_conflict_parts:
+            if assumption == text:
+                return is_true
+        for assumption, is_true in self.__assumptions_on_need_a:
+            if assumption == text:
+                return is_true
+        for assumption, is_true in self.__assumptions_on_need_b:
+            if assumption == text:
+                return is_true
+        raise ValueError(f"Assumption '{text}' not found.")
+
     @override
     def to_graphviz(self) -> Graph:
         graph = Digraph(graph_attr=dict(rankdir="RL", nodesep='0.5'))

@@ -20,7 +20,7 @@ import unittest
 
 from thinking_processes import EvaporatingCloud
 
-class TestCurrentRealityTree(unittest.TestCase):
+class TestEvaporatingCloud(unittest.TestCase):
 
     def setUp(self):
         self.ec = EvaporatingCloud(
@@ -52,6 +52,12 @@ class TestCurrentRealityTree(unittest.TestCase):
         self.assertEqual(4, self.ec.get_total_nr_of_assumptions())
         self.ec.remove_assumption('smaller batches reduce carrying cost')
         self.assertEqual(4, self.ec.get_total_nr_of_assumptions())
+
+    def test_set_assumption_truth_value(self):
+        self.ec.set_assumption_truth_value('small is the opposite of large', False)
+        self.assertEqual(False, self.ec.get_assumption_truth_value('small is the opposite of large'))
+        self.ec.set_assumption_truth_value('small is the opposite of large', None)
+        self.assertEqual(None, self.ec.get_assumption_truth_value('small is the opposite of large'))
 
 if __name__ == '__main__':
     unittest.main()
